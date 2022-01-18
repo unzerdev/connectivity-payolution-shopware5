@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.3/engine/Shopware/Components/Plugin/schema/plugin.xsd">
+
+    <label lang="de">Payolution Payment</label>
+    <label lang="en">Payolution Payment</label>
+
+    <version>6.2.0</version>
+    <author><![CDATA[best it Consulting GmbH & Co. KG]]></author>
+    <copyright>(c) by best it AG</copyright>
+    <compatibility minVersion="5.2.0" />
+    <license>MIT</license>
+    <description lang="de">
+        <![CDATA[
+            <h1>Produktinformation Payolution Payment</h1>
+            <p>Die payolution GmbH bietet seit 2011 innovative Lösungen rund um „Kauf auf Rechnung“, „Ratenzahlung“ und
+            „Monatsrechnung“ in der D-A-CH Region an. Durch den White Label Ansatz, bei dem zwar die Zahlungsabwicklung
+            für den Händler übernommen, dem Kunden gegenüber aber weiterhin im Design des Anbieters begegnet wird, muss
+            keiner Drittfirma vertraut werden. Die geschätzte Marke des Händlers bleibt im Fokus. Kunden kaufen also
+            weiter beim Anbieter ihres Vertrauens, der seinen Endkunden wiederum die in der D-A-CH Region beliebtesten
+            Zahlungsmethoden risikolos anbieten kann. Seit August 2015 ist payolution Teil der internationalen Paysafe
+            Group PLC.</p>
+            <br><br>
+            <p>Das Plugin beinhaltet:</p>
+            <ul>
+                <li>Zahlarten Rechnungskauf (B2C/B2B) und Ratenkauf (B2C)</li>
+                <li>synchrone Risikoprüfung</li>
+                <li>kein Medienbruch, keine redirects</li>
+                <li>Weiterverarbeitung der Bestellungen: Versand (Capture), Retoure (Refund)</li>
+            </ul>
+            <br><br>
+            <p>Unser Team steht Ihnen zur Verfügung: <a target="_blank" href="https://payolution.com/merchant/contact/">kontaktieren Sie uns.</a><br></p>
+        ]]>
+    </description>
+    <description lang="en">
+        <![CDATA[
+            <h1>Product information Payolution Payment</h1>
+            <p>Since 2011, payolution GmbH offers innovative solutions around "purchase on account", "installment payment" and
+            "monthly invoice" in the D-A-CH region. Through the white label approach, where the payment processing is taken over
+            for the merchant, but the customer continues to be presented with the provider's design, so
+            no third party company has to be trusted. The merchant's valued brand remains in focus. Customers therefore
+            continue to buy from their trusted provider, who in turn can offer its end customers the most popular payment methods in the D-A-CH region
+            payment methods in the D-A-CH region without any risk. Since August 2015, payolution has been part of the international Paysafe Group PLC.</p>
+            <br><br>
+            <p>This plugin contains:</p>
+            <ul>
+                <li>Payment methods Invoice (B2C/B2B) and installment purchase (B2C)</li>
+                <li>Synchronous risk assessment</li>
+                <li>no media break, no redirects</li>
+                <li>Processing of orders: Shipping (Capture), Retoure (Refund)</li>
+            </ul>
+            <br><br>
+            <p>Our team is at your service: <a target="_blank" href="https://payolution.com/merchant/contact/">contact us.</a><br></p>
+        ]]>
+    </description>
+
+    <changelog version="6.2.0">
+        <changes>Added compatibility for SW 5.7</changes>
+        <changes lang="de">SW 5.7 kompatibilität</changes>
+    </changelog>
+
+    <changelog version="6.1.0">
+        <changes>Added compatibility for SW 5.6</changes>
+        <changes lang="de">SW 5.6 kompatibilität</changes>
+    </changelog>
+
+    <changelog version="6.0.1">
+        <changes>Fixed an error with the handling of flushes in the Doctrine subscriber.</changes>
+        <changes>Fixed an error with registration of the shop entity in an cli context.</changes>
+        <changes lang="de">Ein Fehler bei der Behandlung von Flushes im Doctrine-Abonnenten wurde behoben.</changes>
+        <changes lang="de">Ein Fehler bei der Registrierung der Shop-Entität in einem Kontext wurde behoben.</changes>
+    </changelog>
+
+    <changelog version="6.0.0">
+        <changes>Migrate the plugin to new plugin structure.</changes>
+        <changes lang="de">Zur neuen Pluginstruktur migriert.</changes>
+    </changelog>
+
+    <changelog version="5.4.0">
+        <changes>Compatibility to shopware 5.5</changes>
+        <changes lang="de">shopware 5.5 kompatibilität</changes>
+    </changelog>
+    <changelog version="5.3.10">
+        <changes lang="de"><![CDATA[
+            Fixes:<br><br>
+            <p>- Es konnte vorkommen, dass die Konfigurationseinstellungen für die Payolution-Zahlungsarten im Backend
+            nicht mehr angezeigt wurden, wenn zuvor ein Subshop oder eine Währung entfernt wurde. Dieser Fehler wurde
+            behoben.</p>
+            <p>- Zahlungsmethoden wurden nicht angezeigt, wenn eine von der Rechnungsadresse abweichende Lieferadressse
+            ausgewählt wurde.</p>
+            <p>- Negative Posten in einer Bestellung (z.B. Warenkorbrabatte) wurden nicht korrekt übertragen beim
+            Capture-Prozess.</p>
+            <p>- Für die Ratenkauf-Kalkulation im Testmodus konnte der Username nicht über das Backend geändert werden.</p>
+            <p>- Diverse technische Verbesserungen.</p>
+            ]]></changes>
+        <changes><![CDATA[
+            Fixes:<br><br>
+            <p>- It could happen that the configuration settings for the Payolution payment types in the backend were
+            were no longer displayed if a subshop or currency had previously been removed. This error has been
+            fixed.</p>
+            <p>- Payment methods were not displayed if a delivery address different from the billing address was selected.
+            was selected.</p>
+            <p>- Negative items in an order (e.g. shopping cart discounts) were not transferred correctly during the
+            Capture process.</p>
+            <p>- For the installment purchase calculation in test mode the username could not be changed via the backend.</p>
+            <p>- Various technical improvements.</p>
+            ]]></changes>
+    </changelog>
+    <changelog version="5.3.5">
+        <changes lang="de"><![CDATA[
+            <p>- Mehrfachcaputeres i.v.m anderen Modul behoben</p>
+            <p>- Darstellungsfehler Ratenkauf bei Sprachshop behoben</p>
+            <p>- kleinere Verbesserungen</p>
+        ]]></changes>
+        <changes><![CDATA[
+            <p>- Multiple caputeres in other module fixed</p>
+            <p>- Fixed display error installment purchase at Sprachshop</p>
+            <p>- minor improvements</p>
+        ]]></changes>
+    </changelog>
+</plugin>

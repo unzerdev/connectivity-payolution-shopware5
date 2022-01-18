@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="payolution.guzzle_client" class="GuzzleHttp\ClientInterface"
+                 public="true">
+            <factory service="guzzle_http_client_factory" method="createClient"/>
+        </service>
+
+        <service class="Payolution\Request\RequestWrapper"
+                 id="payolution.request.request_wrapper"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+            <argument id="payolution.client.payolution_client" type="service"/>
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+        </service>
+
+        <service class="Payolution\Client\PayolutionClient"
+                 id="payolution.client.payolution_client"
+                 public="true">
+            <argument id="payolution.guzzle_client" type="service"/>
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+            <argument id="payolution.session.session_request_decorator" type="service"/>
+            <argument id="payolution.converter.latin_converter" type="service"/>
+        </service>
+
+        <service class="Payolution\Session\SessionRequestDecorator"
+                 id="payolution.session.session_request_decorator"
+                 public="true">
+            <argument id="payolution.session.session_token_storage" type="service"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Installment\Cl\CreateRequestArray"
+                 id="payolution.create_request_array_from_shopware_for_installment_cl"
+                 public="true"/>
+
+        <service class="Payolution\Request\Installment\Cl\CreatePostParams"
+                 id="payolution.create_post_params_installment_cl"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+        </service>
+
+        <service class="Payolution\Converter\LatinConverter"
+                 id="payolution.converter.latin_converter"
+                 public="true"/>
+
+        <service class="Payolution\Request\Capture\RequestBuilder"
+                 id="payolution.request.capture.request_builder"
+                 public="true">
+            <argument type="service" id="payolution.request.builder.mapper.system_mapper"/>
+            <argument type="service" id="payolution.request.builder.mapper.workflow_mapper"/>
+        </service>
+
+        <service id="payolution.create_request_array_from_shopware"
+                 class="PolPaymentPayolution\Request\CreateRequestArray"
+                 public="true"/>
+
+        <service class="Payolution\Request\Builder\RequestContextFactory"
+                 id="payolution.request.builder.request_context_factory"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <argument type="service" id="payolution.config.config_loader"/>
+        </service>
+
+        <service class="Payolution\Request\B2B\RequestBuilder" id="payolution.request.b2b.request_builder"
+                 public="true">
+            <argument type="service" id="payolution.request.builder.mapper.basket_mapper"/>
+            <argument type="service" id="payolution.request.builder.mapper.system_mapper"/>
+            <argument type="service" id="payolution.request.builder.mapper.user_mapper"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+        </service>
+
+        <service class="Payolution\Request\Builder\Mapper\BasketMapper"
+                 id="payolution.request.builder.mapper.basket_mapper"
+                 public="true"/>
+
+        <service class="Payolution\Request\Builder\Mapper\UserMapper"
+                 id="payolution.request.builder.mapper.user_mapper"
+                 public="true"/>
+
+        <service class="Payolution\Request\Refund\RequestBuilder"
+                 id="payolution.request.refund.request_builder"
+                 public="true">
+            <argument id="payolution.request.builder.mapper.system_mapper" type="service"/>
+            <argument id="payolution.request.builder.mapper.workflow_mapper" type="service"/>
+        </service>
+
+        <service class="Payolution\Request\Reversal\CreatePostParams"
+                 id="payolution.create_post_params_reversal"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+        </service>
+
+        <service class="Payolution\Request\Builder\Mapper\SystemMapper"
+                 id="payolution.request.builder.mapper.system_mapper"
+                 public="true">
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+            <argument>%pol_payment_payolution.shopware_version%</argument>
+        </service>
+
+        <service class="Payolution\Request\Builder\Mapper\WorkflowMapper"
+                 id="payolution.request.builder.mapper.workflow_mapper"
+                 public="true">
+            <argument id="pol_payment_payolution.fetcher.order_data_fetcher" type="service"/>
+            <argument id="payolution.config" type="service"/>
+        </service>
+
+        <service class="Payolution\Request\Installment\PreCheck\CreatePostParams"
+                 id="payolution.create_post_params_installment_pc"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+        </service>
+
+        <service class="Payolution\Request\Installment\GetDocument"
+                 id="payolution.get_document_request"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+        </service>
+
+        <service class="Payolution\Request\Installment\Cl\GetJsLibrary"
+                 id="payolution.get_js_cl_library"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+        </service>
+
+        <service class="Payolution\Request\Installment\ExecutePayment\CreatePostParams"
+                 id="payolution.create_post_params_installment_execute"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+        </service>
+    </services>
+</container>

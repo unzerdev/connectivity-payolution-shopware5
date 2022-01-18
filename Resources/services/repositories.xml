@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Repositories -->
+        <service id="pol_payment_payolution.repository.workflowhistory"
+                 class="PolPaymentPayolution\Models\Payolution\Payment\WorkflowHistoryRepository" lazy="true"
+                 public="true">
+            <factory service="models" method="getRepository"/>
+            <argument>PolPaymentPayolution\Models\Payolution\Payment\WorkflowHistory</argument>
+            <call method="setEntityManagerWrapper">
+                <argument id="pol_payment_payolution.doctrine.entity_manager_wrapper" type="service"/>
+            </call>
+        </service>
+
+        <service id="pol_payment_payolution.repository.workflow"
+                 class="PolPaymentPayolution\Models\Payolution\Payment\WorkflowRepository" lazy="true"
+                 public="true">
+            <factory service="models" method="getRepository"/>
+            <argument>PolPaymentPayolution\Models\Payolution\Payment\WorkflowElement</argument>
+        </service>
+
+        <service id="pol_payment_payolution.repository.order"
+                 class="Shopware\Models\Order\Repository" lazy="true"
+                 public="true">
+            <factory service="models" method="getRepository"/>
+            <argument>Shopware\Models\Order\Order</argument>
+        </service>
+
+        <service id="pol_payment_payolution.repository.shop"
+                 class="Shopware\Models\Shop\Repository" lazy="true"
+                 public="true">
+            <factory service="models" method="getRepository"/>
+            <argument>Shopware\Models\Shop\Shop</argument>
+        </service>
+    </services>
+</container>

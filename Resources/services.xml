@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <imports>
+        <import resource="subscribers.xml"/>
+        <import resource="commands.xml"/>
+        <import resource="services/workflow.xml"/>
+        <import resource="services/communication.xml"/>
+        <import resource="services/payment.xml"/>
+        <import resource="services/repositories.xml"/>
+        <import resource="services/logger.xml"/>
+        <import resource="services/smarty.xml"/>
+        <import resource="services/config.xml"/>
+        <import resource="services/risk_management.xml"/>
+        <import resource="services/order.xml"/>
+        <import resource="services/plugin.xml"/>
+    </imports>
+
+    <services>
+        <service class="Payolution\Session\SessionTokenStorage" id="payolution.session.session_token_storage"
+                 public="true">
+            <argument id="front" type="service"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument type="service" id="pol_payment_payolution.config.config_context"/>
+        </service>
+
+        <service id="pol_payment_payolution.list_product_service"
+                 class="PolPaymentPayolution\Bundle\StoreFrontBundle\ListProductService"
+                 decorates="shopware_storefront.list_product_service"
+                 public="false">
+            <argument type="service" id="pol_payment_payolution.list_product_service.inner"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Log"
+                 id="payolution.set_logging"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+        </service>
+    </services>
+</container>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Migration -->
+        <service class="Payolution\Migration\WorkflowMigrationInvoker"
+                 id="payolution.migration.workflow_migration_invoker"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.order.position_provider" type="service"/>
+            <argument id="pol_payment_payolution.repository.workflow" type="service"/>
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+        </service>
+
+        <service class="Payolution\Workflow\CaptureInvoker"
+                 id="payolution.workflow.capture_invoker"
+                 public="true">
+            <argument type="service" id="payolution.workflow.capture_repository"/>
+            <argument type="service" id="payolution.workflow.capture_save_handler"/>
+            <argument type="service" id="pol_payment_payolution.payment.workflow.workflow_context_provider"/>
+            <argument type="service" id="payolution.workflow.workflow_voter"/>
+        </service>
+
+        <service class="Payolution\Workflow\RefundInvoker"
+                 id="payolution.workflow.refund_invoker"
+                 public="true">
+            <argument type="service" id="payolution.workflow.refund_save_handler"/>
+            <argument type="service" id="payolution.workflow.refund_repository"/>
+            <argument type="service" id="pol_payment_payolution.payment.workflow.workflow_context_provider"/>
+            <argument type="service" id="payolution.workflow.workflow_voter"/>
+        </service>
+
+        <service class="Payolution\Workflow\ReversalInvoker"
+                 id="payolution.workflow.reversal_invoker"
+                 public="true">
+            <argument id="payolution.create_reversal_array_from_shopware" type="service"/>
+            <argument type="service" id="pol_payment_payolution.repository.workflow"/>
+            <argument type="service" id="pol_payment_payolution.doctrine.entity_manager_wrapper"/>
+            <argument type="service" id="pol_payment_payolution.state.order_state_handler"/>
+            <argument type="service" id="payolution.plugin_config"/>
+        </service>
+
+        <service class="Payolution\Workflow\CaptureSaveHandler"
+                 id="payolution.workflow.capture_save_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.doctrine.entity_manager_wrapper"/>
+            <argument type="service" id="events"/>
+        </service>
+
+        <service class="Payolution\Workflow\CaptureRepository"
+                 id="payolution.workflow.capture_repository"
+                 public="true">
+            <argument id="payolution.request.capture.request_builder" type="service"/>
+            <argument id="payolution.request.request_wrapper" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Workflow\WorkflowContextProvider"
+                 id="pol_payment_payolution.payment.workflow.workflow_context_provider"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+            <argument id="payolution.plugin_config" type="service"/>
+            <argument id="pol_payment_payolution.config.config_context" type="service"/>
+            <argument id="pol_payment_payolution.payment.workflow.element_extractor" type="service"/>
+            <argument id="pol_payment_payolution.payment.order.position_provider" type="service"/>
+        </service>
+
+        <service class="Payolution\Workflow\WorkflowVoter"
+                 id="payolution.workflow.workflow_voter"
+                 public="true">
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+            <argument id="pol_payment_payolution.payment.capture.workflow_amount_provider" type="service"/>
+        </service>
+
+        <service class="Payolution\Workflow\RefundSaveHandler"
+                 id="payolution.workflow.refund_save_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.doctrine.entity_manager_wrapper"/>
+            <argument type="service" id="events"/>
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+        </service>
+
+        <service class="Payolution\Workflow\RefundRepository"
+                 id="payolution.workflow.refund_repository"
+                 public="true">
+            <argument id="payolution.request.refund.request_builder" type="service"/>
+            <argument id="payolution.request.request_wrapper" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Backend\Payment\Reversal"
+                 id="payolution.create_reversal_array_from_shopware"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.fetcher.order_data_fetcher"/>
+            <argument type="service" id="payolution.create_post_params_reversal"/>
+            <argument type="service" id="payolution.request.request_wrapper"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Workflow\ElementExtractor"
+                 id="pol_payment_payolution.payment.workflow.element_extractor"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.repository.workflow"/>
+            <argument type="service" id="pol_payment_payolution.snippet_manager.snippet_manager"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Capture\WorkflowAmountProvider"
+                 id="pol_payment_payolution.payment.capture.workflow_amount_provider"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <argument type="service" id="pol_payment_payolution.repository.workflow"/>
+            <argument type="service" id="pol_payment_payolution.payment.payment_util"/>
+            <argument type="service" id="pol_payment_payolution.snippet_manager.snippet_manager"/>
+        </service>
+    </services>
+</container>

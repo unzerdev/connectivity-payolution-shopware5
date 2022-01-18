@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service class="Payolution\Config\ConfigLoader" id="payolution.config.config_loader"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="service_container" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Config\ConfigContext" id="pol_payment_payolution.config.config_context"
+                 public="true">
+            <argument id="front" type="service"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="service_container" type="service"/>
+            <argument id="pol_payment_payolution.config.frontend.config_context_provider" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Config\ConfigContextProvider"
+                 id="pol_payment_payolution.config.frontend.config_context_provider"
+                 public="true">
+            <argument>frontend</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\Shop\ShopProvider" id="pol_payment_payolution.shop.shop_provider"
+                 public="true">
+            <argument id="pol_payment_payolution.repository.shop" type="service"/>
+            <argument id="pol_payment_payolution.repository.order" type="service"/>
+            <call method="setContainer">
+                <argument id="service_container" type="service"/>
+            </call>
+        </service>
+
+        <service class="PolPaymentPayolution\Config\ConfigProvider"
+                 id="pol_payment_payolution.config.config_provider"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.shop.shop_provider"/>
+            <argument type="service" id="shopware.plugin.config_reader"/>
+            <argument type="service" id="dbal_connection"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\Config\ConfigContextProvider"
+                 id="payolution.config_context_provider"
+                 public="true"/>
+
+        <service class="PolPaymentPayolution\Config\LegacyConfigFactory" id="pol_payment_payolution.config.config_factory"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+            <argument id="pol_payment_payolution.config.config_context" type="service"/>
+        </service>
+
+        <service class="Payolution\Config\AbstractConfig"
+                 id="payolution.config"
+                 public="true">
+            <factory service="pol_payment_payolution.config.config_factory" method="getConfig"/>
+        </service>
+
+        <service id="payolution.plugin_config" class="PolPaymentPayolution\Config\PluginConfig" lazy="true"
+                 public="true">
+            <factory service="pol_payment_payolution.config.plugin_config_factory" method="getConfig"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Config\PluginConfigFactory"
+                 id="pol_payment_payolution.config.plugin_config_factory"
+                 public="true">
+            <argument id="shopware.plugin.cached_config_reader" type="service"/>
+            <argument type="service" id="pol_payment_payolution.config.config_context"/>
+        </service>
+
+        <service class="PolPaymentPayolution\GetPluginConfig"
+                 id="payolution.get_plugin_config"
+                 public="true">
+            <argument id="shopware.plugin.cached_config_reader" type="service"/>
+        </service>
+    </services>
+</container>

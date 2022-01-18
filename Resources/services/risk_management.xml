@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="payolution.riskmanagement_check_payment" class="PolPaymentPayolution\RiskManagement\CheckPayment"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager" />
+            <argument type="service" id="pol_payment_payolution.util.session.session_manager"/>
+            <argument type="service" id="payolution.request.request_wrapper" />
+            <argument type="service" id="payolution.request.builder.request_context_factory" />
+            <argument type="service" id="payolution.request.b2b.request_builder" />
+            <argument type="service" id="payolution.create_request_array_from_shopware" />
+        </service>
+
+        <service class="PolPaymentPayolution\RiskManagement\Context\RiskManagementContextFactory"
+                 id="pol_payment_payolution.risk_management.context.risk_management_context_factory"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.util.session.session_manager"/>
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <argument type="service" id="pol_payment_payolution.config.config_provider"/>
+        </service>
+
+        <service class="PolPaymentPayolution\RiskManagement\Check\RequestCheck"
+                 id="pol_payment_payolution.risk_management.check.request_check"
+                 public="true">
+            <argument type="service" id="front"/>
+        </service>
+
+        <service class="PolPaymentPayolution\RiskManagement\Check\PaymentCheck"
+                 id="pol_payment_payolution.risk_management.check.payment_check"
+                 public="true"/>
+
+        <service class="PolPaymentPayolution\RiskManagement\Check\UserCheck"
+                 id="pol_payment_payolution.risk_management.check.user_check"
+                 public="true"/>
+
+        <service class="PolPaymentPayolution\RiskManagement\Check\RestrictionsCheck"
+                 id="pol_payment_payolution.risk_management.check.restrictions_check"
+                 public="true"/>
+
+        <service class="PolPaymentPayolution\RiskManagement\Check\BasketCheck"
+                 id="pol_payment_payolution.risk_management.check.basket_check"
+                 public="true"/>
+
+        <service class="PolPaymentPayolution\RiskManagement\RiskManagementExtension"
+                 id="pol_payment_payolution.risk_management.risk_management_extension"
+                 public="true">
+            <call method="addRiskCheck">
+                <argument id="pol_payment_payolution.risk_management.check.request_check" type="service"/>
+            </call>
+            <call method="addRiskCheck">
+                <argument id="pol_payment_payolution.risk_management.check.payment_check" type="service"/>
+            </call>
+            <call method="addRiskCheck">
+                <argument id="pol_payment_payolution.risk_management.check.user_check" type="service"/>
+            </call>
+            <call method="addRiskCheck">
+                <argument id="pol_payment_payolution.risk_management.check.restrictions_check" type="service"/>
+            </call>
+            <call method="addRiskCheck">
+                <argument id="pol_payment_payolution.risk_management.check.basket_check" type="service"/>
+            </call>
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+        </service>
+
+        <service id="payolution.check_personal" class="PolPaymentPayolution\RiskManagement\CheckPersonal"
+                 public="true">
+            <argument id="db" type="service"/>
+        </service>
+    </services>
+</container>

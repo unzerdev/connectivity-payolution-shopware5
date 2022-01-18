@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service class="PolPaymentPayolution\Subscriber\ControllerPathSubscriber"
+                 id="pol_payment_payolution.subscriber.controller_path_subscriber"
+                 public="true">
+            <tag name="shopware.event_subscriber"/>
+            <argument type="service" id="template"/>
+            <argument>%pol_payment_payolution.plugin_dir%/Controllers/Backend</argument>
+            <argument>%pol_payment_payolution.plugin_dir%/Controllers/Frontend</argument>
+            <argument>%pol_payment_payolution.plugin_dir%</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\CronjobSubscriber"
+                 id="pol_payment_payolution.subscriber.cronjob_subscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.helper.file_system" type="service"/>
+            <argument>%kernel.root_dir%</argument>
+            <call method="setLogger">
+                <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+            </call>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\PluginResourcesSubscriber"
+                 id="pol_payment_payolution.subscriber.plugin_resources_subscriber"
+                 public="true">
+            <tag name="shopware.event_subscriber"/>
+            <argument type="service" id="template"/>
+            <argument type="service" id="pol_payment_payolution.smarty.session_token_function"/>
+            <argument>%pol_payment_payolution.plugin_dir%</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\SavePaymentSubscriber"
+                 id="pol_payment_payolution.subscriber.save_payment_subscriber"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.payment.save_payment_handler"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\FilterPaymentMeansDataSubscriber"
+                 id="pol_payment_payolution.subscriber.filter_payment_means_data_subscriber"
+                 public="true">
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\ManageRisksSubscriber"
+                 id="pol_payment_payolution.subscriber.manage_risks_subscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.risk_management.context.risk_management_context_factory" type="service"/>
+            <argument id="pol_payment_payolution.risk_management.risk_management_extension" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+        <service class="PolPaymentPayolution\Subscriber\OrderStateSubscriber"
+                 id="pol_payment_payolution.subscriber.order_state_subscriber"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.state.order_state_change_handler"/>
+            <argument type="service" id="pol_payment_payolution.state.state_change_context_factory"/>
+            <argument type="service" id="payolution.config_context_provider"/>
+            <argument type="service" id="models"/>
+            <argument type="service" id="payolution.plugin_config"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\PaymentReferenceSubscriber"
+                 id="pol_payment_payolution.subscriber.payment_reference_subscriber"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+            <argument type="service" id="db"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+        <service class="PolPaymentPayolution\Subscriber\OrderMailSubscriber"
+                 id="pol_payment_payolution.subscriber.order_mail_subscriber"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+        <service class="PolPaymentPayolution\Subscriber\DocumentSubscriber"
+                 id="pol_payment_payolution.subscriber.document_subscriber"
+                 public="true">
+            <argument id="translation" type="service"/>
+            <argument id="models" type="service"/>
+            <argument id="snippets" type="service"/>
+            <argument id="payolution.config.config_loader" type="service"/>
+            <call method="setLogger">
+                <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+            </call>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\PluginConfigSubscriber"
+                 id="pol_payment_payolution.subscriber.plugin_config_subscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.setup.installer" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\AddressValidationSubscriber"
+                 id="polpaymentpayolution.subscriber.address_validation_subscriber"
+                 public="true">
+            <argument id="db" type="service"/>
+            <argument id="snippets" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\CheckoutSubscriber"
+                 id="polpaymentpayolution.subscriber.checkoutsubscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+            <argument id="payolution.riskmanagement_check_payment" type="service"/>
+            <argument id="db" type="service"/>
+            <argument id="payolution.create_request_array_from_shopware_for_installment_cl" type="service"/>
+            <argument id="payolution.create_post_params_installment_cl" type="service"/>
+            <argument id="payolution.request.request_wrapper" type="service"/>
+            <argument id="snippets" type="service"/>
+            <argument id="pol_payment_payolution.util.session.session_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.validator.payment_validator_manager" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\ArticleDetailSubscriber"
+                 id="polpaymentpayolution.subscriber.article_detail_subscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.installment.installment_voter" type="service"/>
+            <argument id="pol_payment_payolution.payment.payment_provider" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\DispatchSecureSubscriber"
+                 id="polpaymentpayolution.subscriber.dispatch_secure_subscriber"
+                 public="true">
+            <argument>%pol_payment_payolution.plugin_dir%</argument>
+            <argument>%pol_payment_payolution.shopware_version%</argument>
+            <argument id="pol_payment_payolution.util.session.session_manager" type="service"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="template" type="service"/>
+            <argument id="payolution.config.config_loader" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\SessionActionSubscriber"
+                 id="polpaymentpayolution.subscriber.session.action.subscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.util.session.session_manager" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Subscriber\RefundCaptureSubscriber"
+                 id="polpaymentpayolution.subscriber.refund_capture_subscriber"
+                 public="true">
+            <argument id="pol_payment_payolution.repository.workflowhistory" type="service"/>
+            <argument id="pol_payment_payolution.state.order_state_handler" type="service"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service class="PayolutionPickware\Subscriber\PickwareOrderModelSubscriber"
+                 id="payolution_pickware.subscriber.pickware_order_model_subscriber"
+                 public="true">
+            <argument type="service" id="service_container"/>
+            <argument>%pol_payment_payolution.pickware_active%</argument>
+            <tag name="doctrine.event_subscriber"/>
+        </service>
+    </services>
+</container>

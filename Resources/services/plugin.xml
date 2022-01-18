@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service class="PolPaymentPayolution\Setup\Installer"
+                 id="pol_payment_payolution.setup.installer"
+                 public="true">
+            <argument id="shopware.plugin_payment_installer" type="service"/>
+            <argument id="models" type="service"/>
+            <argument id="shopware_attribute.crud_service" type="service"/>
+            <argument id="translation" type="service"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.shopware_version%</argument>
+            <argument>%pol_payment_payolution.plugin_dir%</argument>
+        </service>
+
+        <service class="Symfony\Component\Filesystem\Filesystem"
+                 id="pol_payment_payolution.helper.file_system"
+                 public="false"/>
+
+        <service class="PolPaymentPayolution\Legacy\BootstrapWrapper"
+                 public="true"
+                 id="pol_payment_payolution.legacy.bootstrap_wrapper">
+            <argument id="shopware.plugin.config_reader" type="service"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\ComponentManager\ComponentManager"
+                 id="pol_payment_payolution.component_manager.component_manager"
+                 public="true">
+            <argument id="service_container" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Doctrine\EntityManagerWrapper"
+                 id="pol_payment_payolution.doctrine.entity_manager_wrapper"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\SnippetManager\SnippetManager"
+                 id="pol_payment_payolution.snippet_manager.snippet_manager"
+                 public="true">
+            <argument id="service_container" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Util\Session\SessionManager"
+                 id="pol_payment_payolution.util.session.session_manager"
+                 public="true">
+            <argument id="service_container" type="service"/>
+        </service>
+    </services>
+</container>

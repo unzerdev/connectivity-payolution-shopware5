@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service class="PolPaymentPayolution\Smarty\SessionTokenFunction"
+                 id="pol_payment_payolution.smarty.session_token_function"
+                 public="true">
+            <argument id="payolution.session.session_token_storage" type="service"/>
+        </service>
+    </services>
+</container>

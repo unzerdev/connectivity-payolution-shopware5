@@ -1,0 +1,19 @@
+<br/> Die Rechnung ist bei Erhalt ohne Abz&uuml;ge f&auml;llig. {$instruction.elv} Bitte &uuml;berweisen Sie den Gesamtbetrag schuldbefreiend unter Angabe des Verwendungszecks auf folgendes Konto:
+<table class="payment_instruction">
+    <tr>
+        <td>Empf&auml;nger:</td>
+        <td>{$instruction.recipient}</td>
+    </tr>
+    <tr>
+        <td>IBAN:</td>
+        <td>{$instruction.iban}</td>
+    </tr>
+    <tr>
+        <td>BIC:</td>
+        <td>{$instruction.bic}</td>
+    </tr>
+    <tr>
+        <td><strong>Verwendungszweck:</strong></td>
+        <td><strong>{$instruction.reference}</strong></td>
+    </tr>
+</table>

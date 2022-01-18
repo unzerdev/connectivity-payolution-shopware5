@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service class="PolPaymentPayolution\Payment\Order\Factory\CapturePositionFactory"
+                 id="pol_payment_payolution.payment.order.factory.capture_position_factory"
+                 public="true"/>
+        <service class="PolPaymentPayolution\Payment\Order\Factory\RefundPositionFactory"
+                 id="pol_payment_payolution.payment.order.factory.refund_position_factory"
+                 public="true"/>
+
+        <service class="PolPaymentPayolution\Payment\Order\PositionProvider"
+                 id="pol_payment_payolution.payment.order.position_provider"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.order.position_factory" type="service"/>
+            <argument id="events" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Order\Factory\PositionFactory"
+                 id="pol_payment_payolution.payment.order.position_factory"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.payment.payment_util"/>
+            <argument type="service" id="pol_payment_payolution.repository.workflow"/>
+            <argument type="service" id="pol_payment_payolution.payment.order.factory.capture_position_factory"/>
+            <argument type="service" id="pol_payment_payolution.payment.order.factory.refund_position_factory"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\PaymentUtil" id="pol_payment_payolution.payment.payment_util"
+                 public="true">
+            <argument id="pol_payment_payolution.snippet_manager.snippet_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.factory.shipping_factory" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Factory\ShippingFactory"
+                 id="pol_payment_payolution.payment.factory.shipping_factory"
+                 public="true">
+            <argument id="pol_payment_payolution.repository.workflow" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Validator\PaymentValidatorManager"
+                 id="pol_payment_payolution.payment.validator.payment_validator_manager"
+                 public="true">
+            <call method="addValidator">
+                <argument id="pol_payment_payolution.payment.validator.validators.b2bvalidator" type="service"/>
+            </call>
+            <call method="addValidator">
+                <argument id="pol_payment_payolution.payment.validator.validators.b2cvalidator" type="service"/>
+            </call>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Validator\Validators\B2BValidator"
+                 id="pol_payment_payolution.payment.validator.validators.b2bvalidator"
+                 public="true">
+            <argument id="validator" type="service"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.validator.constraints.min_age_constraint" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Validator\Validators\B2CValidator"
+                 id="pol_payment_payolution.payment.validator.validators.b2cvalidator"
+                 public="true">
+            <argument id="validator" type="service"/>
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.validator.constraints.min_age_constraint" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\PaymentProvider"
+                 id="pol_payment_payolution.payment.payment_provider"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="service_container" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Installment\InstallmentVoter"
+                 id="pol_payment_payolution.installment.installment_voter"
+                 public="true">
+            <argument id="payolution.config" type="service"/>
+            <argument id="pol_payment_payolution.payment.payment_provider" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\PaymentInvoker"
+                 id="pol_payment_payolution.payment.payment_invoker"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+            <argument id="pol_payment_payolution.payment.order.position_provider" type="service"/>
+        </service>
+
+        <service class="Payolution\Request\Capture\CreatePostParams"
+                 id="payolution.create_post_params_capture"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Backend\Payment\Capture"
+                 id="payolution.create_capture_array_from_shopware"
+                 public="true">
+            <argument type="service" id="db"/>
+            <argument type="service" id="pol_payment_payolution.fetcher.order_data_fetcher"/>
+            <argument type="service" id="payolution.create_post_params_capture"/>
+            <argument type="service" id="payolution.request.request_wrapper"/>
+            <argument type="service" id="pol_payment_payolution.config.config_provider"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+        </service>
+
+        <service class="Payolution\Request\Refund\CreatePostParams"
+                 id="payolution.create_post_params_refund"
+                 public="true">
+            <argument type="service" id="payolution.config"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Backend\Payment\Refund"
+                 id="payolution.create_refund_array_from_shopware"
+                 public="true">
+            <argument type="service" id="db"/>
+            <argument type="service" id="pol_payment_payolution.fetcher.order_data_fetcher"/>
+            <argument type="service" id="payolution.create_post_params_refund"/>
+            <argument type="service" id="payolution.request.request_wrapper"/>
+            <argument type="service" id="pol_payment_payolution.config.config_provider"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+        </service>
+
+        <!-- Constraints -->
+        <service class="PolPaymentPayolution\Payment\Validator\Constraints\MinAgeConstraint"
+                 id="pol_payment_payolution.payment.validator.constraints.min_age_constraint"
+                 public="true">
+            <argument>18</argument>
+        </service>
+    </services>
+</container>

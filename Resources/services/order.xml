@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service class="PolPaymentPayolution\State\OrderStateChangeHandler"
+                 id="pol_payment_payolution.state.order_state_change_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.plugin_logger"/>
+            <argument type="service" id="payolution.workflow.capture_invoker"/>
+            <argument type="service" id="payolution.workflow.refund_invoker"/>
+            <argument type="service" id="payolution.workflow.reversal_invoker"/>
+            <argument type="service" id="pol_payment_payolution.repository.workflow"/>
+            <argument type="service" id="payolution.plugin_config"/>
+        </service>
+
+        <service class="PolPaymentPayolution\State\OrderStateHandler"
+                 id="pol_payment_payolution.state.order_state_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+        </service>
+
+        <service class="PolPaymentPayolution\State\StateChangeContextFactory"
+                 id="pol_payment_payolution.state.state_change_context_factory"
+                 public="true">
+            <argument type="service" id="front"/>
+            <argument type="service" id="models"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\Order\PositionProvider"
+                 id="pol_payment_payolution.payment.order.position_provider"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <argument type="service" id="pol_payment_payolution.payment.order.position_factory"/>
+            <argument type="service" id="events"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Fetcher\OrderDataFetcher"
+                 id="pol_payment_payolution.fetcher.order_data_fetcher"
+                 public="true">
+            <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
+        </service>
+
+        <!-- SaveHandler -->
+        <service class="PolPaymentPayolution\Payment\SavePaymentHandler"
+                 id="pol_payment_payolution.payment.save_payment_handler"
+                 public="true">
+            <argument id="pol_payment_payolution.plugin_logger" type="service"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\SaveHandler\B2CSaveHandler"
+                 id="pol_payment_payolution.payment.save_handler.b2csave_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <tag name="payol.save_handler"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\SaveHandler\B2BSaveHandler"
+                 id="pol_payment_payolution.payment.save_handler.b2bsave_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <tag name="payol.save_handler"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\SaveHandler\ElvSaveHandler"
+                 id="pol_payment_payolution.payment.save_handler.elv_save_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <tag name="payol.save_handler"/>
+        </service>
+
+        <service class="PolPaymentPayolution\Payment\SaveHandler\InstallmentSaveHandler"
+                 id="pol_payment_payolution.payment.save_handler.installment_save_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.component_manager.component_manager"/>
+            <tag name="payol.save_handler"/>
+        </service>
+
+        <service class="PayolutionPickware\Position\OrderModelHandler" id="payolution_pickware.position.order_model_handler"
+                 public="true">
+            <argument type="service" id="pol_payment_payolution.repository.workflow"/>
+            <argument type="service" id="payolution.workflow.refund_invoker"/>
+            <argument type="service" id="payolution.plugin_config"/>
+            <argument type="service" id="pol_payment_payolution.repository.workflowhistory"/>
+        </service>
+    </services>
+</container>

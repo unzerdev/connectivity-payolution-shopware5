@@ -1,0 +1,24 @@
+<p><strong>Schrijf het totaalbedrag over op volgende rekening:</strong></p>
+<table class="payment_instruction">
+<tbody>
+<tr>
+<td>Ontvanger:</td>
+<td>{$instruction.recipient}</td>
+</tr>
+<tr>
+<td>IBAN:</td>
+<td>{$instruction.iban}</td>
+</tr>
+<tr>
+<td>BIC:</td>
+<td>{$instruction.bic}</td>
+</tr>
+<tr>
+<td><strong>Gebruiksdoeleinde:</strong></td>
+<td><strong>{$instruction.reference}</strong></td>
+</tr>
+</tbody>
+</table>
+<p>De rekening dient per ommegaande, zonder enige kortingen, voldaan te worden.
+Schrijf het totaalbedrag met bevrijdende werking over op het hierboven vermelde rekeningnummer,
+met vermelding van het gebriuksdoeleinde.</p>

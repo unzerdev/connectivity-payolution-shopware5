@@ -1,0 +1,45 @@
+{
+    "packages": [
+        {
+            "name": "umpirsky/transliterator",
+            "version": "v0.1.0",
+            "version_normalized": "0.1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/umpirsky/Transliterator.git",
+                "reference": "8460a54c25df925e6862c4a3fd8cbe62ded3aaac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/umpirsky/Transliterator/zipball/8460a54c25df925e6862c4a3fd8cbe62ded3aaac",
+                "reference": "8460a54c25df925e6862c4a3fd8cbe62ded3aaac",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "time": "2016-03-12T16:45:40+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Transliterator": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Саша Стаменковић",
+                    "email": "umpirsky@gmail.com"
+                }
+            ],
+            "description": "Transliterator is a PHP library for text transliteration.",
+            "install-path": "../umpirsky/transliterator"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

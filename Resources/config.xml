@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.3/engine/Shopware/Components/Plugin/schema/config.xsd">
+    <elements>
+        <element type="combo" scope="shop">
+            <name>b2cOrderState</name>
+            <label><![CDATA[Zahlungsstatus für Rechnungskauf (B2C) nach der Bestellung]]></label>
+            <value>17</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>b2cOrderStateCapture</name>
+            <label><![CDATA[Zahlungsstatus für Rechnungskauf (B2C) nach dem Capture]]></label>
+            <value>12</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>b2cOrderStateRefund</name>
+            <label><![CDATA[Zahlungsstatus für Rechnungskauf (B2C) nach dem Refund]]></label>
+            <value>20</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>b2bOrderState</name>
+            <label><![CDATA[Zahlungsstatus für Rechnungskauf (B2B) nach der Bestellung]]></label>
+            <value>17</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>b2bOrderStateCapture</name>
+            <label><![CDATA[Zahlungsstatus für Rechnungskauf (B2B) nach dem Capture]]></label>
+            <value>12</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>b2bOrderStateRefund</name>
+            <label><![CDATA[Zahlungsstatus für Rechnungskauf (B2B) nach dem Refund]]></label>
+            <value>20</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>installmentOrderState</name>
+            <label><![CDATA[Zahlungsstatus für Ratenkauf nach der Bestellung]]></label>
+            <value>12</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>installmentOrderStateRefund</name>
+            <label><![CDATA[Zahlungsstatus für Ratenkauf nach dem Refund]]></label>
+            <value>20</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>elvOrderState</name>
+            <label><![CDATA[Zahlungsstatus für Lastschrift nach der Bestellung]]></label>
+            <value>17</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>elvOrderStateCapture</name>
+            <label><![CDATA[Zahlungsstatus für Lastschrift nach dem Capture]]></label>
+            <value>12</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>elvOrderStateRefund</name>
+            <label><![CDATA[Zahlungsstatus für Lastschrift nach dem Refund]]></label>
+            <value>20</value>
+            <store>Shopware.apps.Base.store.PaymentStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>automaticRefundOrder</name>
+            <label><![CDATA[Bestellungen die gelöscht werden automatisch erstatten]]></label>
+            <value>true</value>
+        </element>
+        <element type="combo" scope="shop">
+            <name>refundOrderState</name>
+            <label><![CDATA[Bestellstatus für stornierte Bestellungen]]></label>
+            <value>4</value>
+            <store>Shopware.apps.Base.store.OrderStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="combo" scope="shop">
+            <name>captureOrderState</name>
+            <label><![CDATA[Bestellstatus für Bestellungen die gecaptured werden sollen]]></label>
+            <value>4</value>
+            <store>Shopware.apps.Base.store.OrderStatus</store>
+            <options>
+                <multiSelect>false</multiSelect>
+                <valueField>id</valueField>
+                <displayField>description</displayField>
+            </options>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>automaticCaptureAfterOrder</name>
+            <label><![CDATA[Bestellungen direkt nach Bestlleingang capturen]]></label>
+            <value>false</value>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>automaticRefundPositionsPickware</name>
+            <label><![CDATA[Positionen nach der Stornierung automatisch rückerstatten]]></label>
+            <value>false</value>
+            <description>Nur Pickware</description>
+        </element>
+        <element type="boolean" scope="shop">
+            <name>simpleHistoryMessages</name>
+            <label><![CDATA[Vereinfachte Darstellung der Refund/Capture Historie]]></label>
+            <value>false</value>
+        </element>
+    </elements>
+</config>
