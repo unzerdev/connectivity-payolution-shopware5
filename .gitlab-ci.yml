@@ -1,0 +1,116 @@
+stages:
+  - style
+  - quality
+  - test
+  - package
+
+cache:
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+
+variables:
+  DOCKER_DRIVER: overlay2
+  COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
+
+before_script:
+  - sudo sed -i 's/__dockware_php_version__/'${PHP_VERSION}'/g' /etc/apache2/sites-enabled/000-default.conf
+  - sudo service php$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')-fpm stop
+  - sudo service php${PHP_VERSION}-fpm start
+  - sudo update-alternatives --set php /usr/bin/php${PHP_VERSION}
+  - curl https://getcomposer.org/download/1.10.23/composer.phar -o /var/www/html/composer
+  - chmod +x /var/www/html/composer
+  - ${COMPOSER_COMMAND}
+  - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
+
+codestyle:
+  stage: style
+  image: "dockware/play:5.7.7"
+  variables:
+    PHP_VERSION: "7.4"
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHP_CS == "1" ]
+  script:
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/php-cs-fixer fix -v --dry-run
+  cache:
+    key: global
+    paths:
+      - .php_cs.cache
+
+k10r-phpstan:
+  stage: quality
+  image: "dockware/play:${SW_VERSION}"
+  parallel:
+    matrix:
+      -   PHP_VERSION: [ "7.2", "7.3" ]
+          SW_VERSION: [  "5.6.3" ]
+      -   PHP_VERSION: [ "7.4", "8.0" ]
+          SW_VERSION: [ "5.7.0", "5.7.7" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
+  script:
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse .
+  cache:
+    key: global
+    paths:
+      - vendor
+
+sw-phpstan:
+  stage: quality
+  image: "dockware/play:${SW_VERSION}"
+  parallel:
+    matrix:
+      -   PHP_VERSION: [ "7.2", "7.3" ]
+          SW_VERSION: [  "5.6.3" ]
+      -   PHP_VERSION: [ "7.4", "8.0" ]
+          SW_VERSION: [ "5.7.0", "5.7.7" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_SW == "1" ]
+  script:
+    - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
+    - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw5 /var/www/html/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse .
+  cache:
+    key: global
+    paths:
+      - vendor
+
+installtest:
+  stage: test
+  image: "dockware/play:${SW_VERSION}"
+  parallel:
+    matrix:
+      -   PHP_VERSION: [ "7.2", "7.3" ]
+          SW_VERSION: [ "5.6.3" ]
+      -   PHP_VERSION: [ "7.4", "8.0" ]
+          SW_VERSION: [ "5.7.0", "5.7.7" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_SW == "1" ]
+  script:
+    - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
+    - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+    - sudo service mysql start
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && ${COMPOSER_COMMAND} --no-dev
+    - php /var/www/html/bin/console sw:plugin:refresh
+    - php /var/www/html/bin/console sw:plugin:list
+    - php /var/www/html/bin/console sw:plugin:install --activate ${CI_PROJECT_NAME}
+    - php /var/www/html/bin/console sw:plugin:list
+  cache:
+    key: global
+    paths:
+      - vendor
+
+package:
+  image: kellerkinder/shopware-package-plugin:latest
+  stage: package
+  only:
+    - master
+  before_script:
+    - echo "" #must be set, otherwise the normal before_script will be executed
+  script:
+    - package-plugin
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME.zip
