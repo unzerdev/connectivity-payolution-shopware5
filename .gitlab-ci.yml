@@ -25,7 +25,7 @@ codestyle:
   stage: style
   image: "dockware/play:5.7.7"
   variables:
-    PHP_VERSION: "7.2"
+    PHP_VERSION: "7.4"
   needs: [ ]
   except:
     variables: [ $DISABLE_PHP_CS == "1" ]
