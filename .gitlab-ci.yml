@@ -23,9 +23,9 @@ before_script:
 
 codestyle:
   stage: style
-  image: "dockware/play:5.7.7"
+  image: "dockware/play:5.6.10"
   variables:
-    PHP_VERSION: "7.4"
+    PHP_VERSION: "7.3"
   needs: [ ]
   except:
     variables: [ $DISABLE_PHP_CS == "1" ]
@@ -43,7 +43,7 @@ k10r-phpstan:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
           SW_VERSION: [  "5.6.3" ]
-      -   PHP_VERSION: [ "7.4", "8.0" ]
+      -   PHP_VERSION: [ "7.4" ]
           SW_VERSION: [ "5.7.0", "5.7.7" ]
   needs: [ ]
   except:
@@ -62,7 +62,7 @@ sw-phpstan:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
           SW_VERSION: [  "5.6.3" ]
-      -   PHP_VERSION: [ "7.4", "8.0" ]
+      -   PHP_VERSION: [ "7.4" ]
           SW_VERSION: [ "5.7.0", "5.7.7" ]
   needs: [ ]
   except:
@@ -83,7 +83,7 @@ installtest:
     matrix:
       -   PHP_VERSION: [ "7.2", "7.3" ]
           SW_VERSION: [ "5.6.3" ]
-      -   PHP_VERSION: [ "7.4", "8.0" ]
+      -   PHP_VERSION: [ "7.4" ]
           SW_VERSION: [ "5.7.0", "5.7.7" ]
   needs: [ ]
   except:
