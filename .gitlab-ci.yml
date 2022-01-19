@@ -10,6 +10,9 @@ cache:
 variables:
   DOCKER_DRIVER: overlay2
   COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
+  DISABLE_PHP_CS: 1
+  DISABLE_PHPSTAN_K10R: 1
+  DISABLE_PHPSTAN_SW: 1
 
 before_script:
   - sudo sed -i 's/__dockware_php_version__/'${PHP_VERSION}'/g' /etc/apache2/sites-enabled/000-default.conf
