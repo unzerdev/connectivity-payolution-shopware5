@@ -110,7 +110,6 @@ package:
   stage: package
   only:
     - master
-    - feature/HEIDELPAYSUPPORT-206
   before_script:
     - echo "" #must be set, otherwise the normal before_script will be executed
   script:
