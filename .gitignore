@@ -1,0 +1,3 @@
+.php_cs.cache
+vendor
+phpmd_result.xml
