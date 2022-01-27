@@ -38,11 +38,6 @@ class CheckoutSubscriber implements SubscriberInterface
     private $updateErrorInstallment;
 
     /**
-     * @var string
-     */
-    private $updateErrorInvoice;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -194,16 +189,6 @@ class CheckoutSubscriber implements SubscriberInterface
                   WHERE
                     userId = :userId';
 
-            $this->updateErrorInvoice = '
-                  UPDATE
-                    bestit_payolution_userCheck
-                  SET
-                    errorMessage = :errorMessage
-                  WHERE
-                    userId = :userId
-                  AND
-                    paymentId = :paymentId';
-
             unset($checksWithoutRequest);
 
             $checksWithoutRequest[0] = $this->checkPayment->checkDifferentAddresses($this->parameters);
@@ -306,25 +291,6 @@ class CheckoutSubscriber implements SubscriberInterface
                         }
                     }
                 }
-            }
-
-            if (!isset($errorMessage)) {
-                $error = $this->dbAdapter->fetchRow(
-                    'SELECT
-                      errorMessage,
-                      decline
-                    FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId',
-                    array(
-                        ':userId' => $user['additional']['user']['id'],
-                        ':paymentId' => $user['additional']['user']['paymentID'],
-                    )
-                );
-                $errorMessage = $error['errorMessage'];
             }
 
             if ($actionName === 'shippingPayment') {
@@ -587,9 +553,6 @@ class CheckoutSubscriber implements SubscriberInterface
 
                         if ($paymentName === 'payolution_installment') {
                             $updateErrorSql = $this->updateErrorInstallment;
-                        } else {
-                            $updateErrorSql = $this->updateErrorInvoice;
-                            $errorParam[':paymentId'] = $user['additional']['user']['paymentID'];
                         }
 
                         $errorParam[':errorMessage'] = null;
@@ -668,42 +631,6 @@ class CheckoutSubscriber implements SubscriberInterface
                                         'action' => 'cart',
                                     )
                                 );
-                            } else {
-                                $params[':userId'] = $user['additional']['user']['id'];
-                                $params[':paymentId'] = $user['additional']['user']['paymentID'];
-                                $exits = $this->dbAdapter->fetchOne(
-                                    'SELECT
-                                      COUNT(*)
-                                    FROM
-                                      bestit_payolution_userCheck
-                                    WHERE
-                                      userId = :userId
-                                    AND
-                                      paymentId = :paymentId',
-                                    $params
-                                );
-
-                                if ($exits > 0) {
-                                    $sql = $this->updateErrorInvoice;
-                                } else {
-                                    $sql = '
-                                  INSERT INTO
-                                    bestit_payolution_userCheck
-                                      (`userId`,`paymentId`,`errorMessage`)
-                                  VALUES
-                                    (:userId,:paymentId,:errorMessage)';
-                                }
-
-                                $params[':errorMessage'] = 'birthday';
-                                $this->dbAdapter->query($sql, $params);
-
-                                $subject->redirect(
-                                    array(
-                                        'controller' => 'checkout',
-                                        'action' => 'shippingPayment',
-                                        'sTarget' => 'checkout'
-                                    )
-                                );
                             }
                         } else {
                             $checksWithRequest[0] = $this->checkPayment->checkPayment($this->parameters);
@@ -717,15 +644,6 @@ class CheckoutSubscriber implements SubscriberInterface
                                     )
                                 );
                             } elseif ($checksWithRequest[0] === false) {
-                                $this->dbAdapter->query(
-                                    $this->updateErrorInvoice,
-                                    array(
-                                        ':paymentId' => $user['additional']['user']['paymentID'],
-                                        ':errorMessage' => 'rejected',
-                                        ':userId' => $user['additional']['user']['id'],
-                                    )
-                                );
-
                                 $subject->redirect(
                                     array(
                                         'controller' => 'checkout',
@@ -790,32 +708,6 @@ class CheckoutSubscriber implements SubscriberInterface
                   VALUES
                     (:userId,:errorMessage)';
             }
-        } elseif (!empty($error['payment'])) {
-            $exits = $this->dbAdapter->fetchOne(
-                'SELECT
-                      COUNT(*)
-                    FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId',
-                array(
-                    ':userId' => $this->parameters[2]['additional']['user']['id'],
-                    ':paymentId' => $this->parameters[0]
-                )
-            );
-            if ($exits > 0) {
-                $sql = $this->updateErrorInvoice;
-            } else {
-                $sql = '
-                  INSERT INTO
-                    bestit_payolution_userCheck
-                      (`userId`,`paymentId`,`errorMessage`)
-                  VALUES
-                    (:userId,:paymentId,:errorMessage)';
-            }
-            $params[':paymentId'] = $this->parameters[0];
         }
 
         if (!empty($sql)) {

@@ -276,18 +276,7 @@ sql;
         $connection = $this->modelManager->getConnection();
 
         $connection->query(
-            'CREATE TABLE IF NOT EXISTS bestit_payolution_userCheck (
-                `userId` int(11) NOT NULL,
-                `paymentId` int(11) NOT NULL,
-                `decline` int(1) NOT NULL,
-                `addressHash` varchar(255) DEFAULT NULL,
-                `uniqueId` varchar(255) DEFAULT NULL,
-                `lastCheck` varchar(255) DEFAULT NULL,
-                `basketValue` varchar(255) DEFAULT NULL,
-                `errorMessage` text COLLATE utf8_unicode_ci,
-                PRIMARY KEY (`userId`,`paymentId`),
-                FOREIGN KEY (`userId`) REFERENCES s_user(`id`) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
+            'DROP TABLE IF EXISTS bestit_payolution_userCheck;'
         );
 
         $connection->query(
@@ -358,20 +347,6 @@ sql;
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
         );
 
-        $connection->query(
-            'CREATE TABLE IF NOT EXISTS bestit_payolution_userCheck (
-                `userId` int(11) NOT NULL,
-                `paymentId` int(11) NOT NULL,
-                `decline` int(1) NOT NULL,
-                `addressHash` varchar(255) DEFAULT NULL,
-                `uniqueId` varchar(255) DEFAULT NULL,
-                `lastCheck` varchar(255) DEFAULT NULL,
-                `basketValue` varchar(255) DEFAULT NULL,
-                `errorMessage` text COLLATE utf8_unicode_ci,
-                PRIMARY KEY (`userId`,`paymentId`),
-                FOREIGN KEY (`userId`) REFERENCES s_user(`id`) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
-        );
         $connection->query(
             'CREATE TABLE IF NOT EXISTS bestit_payolution_installment (
                 `userId` int(11) NOT NULL,

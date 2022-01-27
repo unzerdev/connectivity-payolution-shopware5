@@ -49,17 +49,15 @@ class RequestContextFactory
     /**
      * Create Context
      *
-     * @param array $user
      * @return RequestContext
      */
-    public function create(array $user)
+    public function create()
     {
         return new RequestContext(
             $this->loader->getCurrentShop(),
             $this->loader->loadCurrentConfig(),
             $this->generateUniqueId(),
-            $this->generateUniqueId(),
-            $this->getPreCheckId($user)
+            $this->generateUniqueId()
         );
     }
 
@@ -69,42 +67,17 @@ class RequestContextFactory
      * @param string $transActionId
      * @param string $trxId
      * @param string $referenceId
-     * @param array $user
+     *
      * @return RequestContext
      */
-    public function createWithTransactionInfos($transActionId, $trxId, $referenceId, array $user)
+    public function createWithTransactionInfos($transActionId, $trxId, $referenceId)
     {
         return new RequestContext(
             $this->loader->getCurrentShop(),
             $this->loader->loadCurrentConfig(),
             $transActionId,
             $trxId,
-            $this->getPreCheckId($user),
             $referenceId
-        );
-    }
-
-    /**
-     * Get Pre Check ID
-     *
-     * @param array $user
-     * @return string
-     */
-    private function getPreCheckId(array $user)
-    {
-        return $this->componentManager->getDatabase()->fetchOne(
-            'SELECT
-                      uniqueId
-                    FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId',
-            [
-                ':userId' => $user['additional']['user']['id'],
-                ':paymentId' => $user['additional']['user']['paymentID']
-            ]
         );
     }
 }

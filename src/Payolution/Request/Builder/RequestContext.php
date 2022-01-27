@@ -36,11 +36,6 @@ class RequestContext
     /**
      * @var string
      */
-    private $preCheckId;
-
-    /**
-     * @var string
-     */
     private $referenceId;
 
     /**
@@ -50,7 +45,6 @@ class RequestContext
      * @param Config $config
      * @param $transactionId
      * @param $trxId
-     * @param null $preCheckId
      * @param null $referenceId
      */
     public function __construct(
@@ -58,14 +52,12 @@ class RequestContext
         Config $config,
         $transactionId,
         $trxId = null,
-        $preCheckId = null,
         $referenceId = null
     ) {
         $this->shop = $shop;
         $this->config = $config;
         $this->transactionId = $transactionId;
         $this->trxId = $trxId;
-        $this->preCheckId = $preCheckId;
         $this->referenceId = $referenceId;
     }
 
@@ -107,16 +99,6 @@ class RequestContext
     public function getTrxId()
     {
         return $this->trxId;
-    }
-
-    /**
-     * Get PreCheckId
-     *
-     * @return string|null
-     */
-    public function getPreCheckId()
-    {
-        return $this->preCheckId;
     }
 
     /**

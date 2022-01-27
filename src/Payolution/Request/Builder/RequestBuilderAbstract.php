@@ -90,17 +90,6 @@ abstract class RequestBuilderAbstract implements RequestBuilderInterface
         $this->userMapper->mapRequest($options, $context, $request);
         $this->mapArray($options, $context, $request);
 
-        if ($options->isPreCheck()) {
-            $this->logger->debug('add preCheck channel to request');
-            $request['CRITERION.PAYOLUTION_PRE_CHECK'] = 'TRUE';
-            $request['TRANSACTION.CHANNEL'] = $context->getConfig()->getChannelPrecheck();
-        }
-
-        if (!$options->isPreCheck() && ($preCheckId = $context->getPreCheckId())) {
-            $this->logger->debug(sprintf('add preCheck id "%s" to request', $preCheckId));
-            $request['CRITERION.PAYOLUTION_PRE_CHECK_ID'] = $preCheckId;
-        }
-
         if ($referenceId = $context->getReferenceId()) {
             $this->logger->debug(sprintf('add reference id "%s" to request', $referenceId));
             $request['IDENTIFICATION.REFERENCEID'] = $referenceId;
