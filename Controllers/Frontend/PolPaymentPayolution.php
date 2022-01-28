@@ -661,8 +661,7 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
             $context = $this->requestContextFactory->createWithTransactionInfos(
                 $orderNumber,
                 $oldContext->getTrxId(),
-                $payolutionData['response']['IDENTIFICATION_UNIQUEID'],
-                $user
+                $payolutionData['response']['IDENTIFICATION_UNIQUEID']
             );
         } else {
             $payolutionData['request']['setIDENTIFICATIONREFERENCEID'] =
@@ -708,28 +707,10 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
                     bestit_payolution_installment
                   WHERE
                     userId = :userId';
-            } else {
-                $sql = '
-                    DELETE FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId';
-                $params['paymentId'] = $user['additional']['user']['paymentID'];
+
+                $this->dbAdapter->query($sql, [':userId' => $user['additional']['user']['id']]);
             }
-        } else {
-            $sql = '
-                    DELETE FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId';
-            $params['paymentId'] = $user['additional']['user']['paymentID'];
         }
-        $params['userId'] = $user['additional']['user']['id'];
-        $this->dbAdapter->query($sql, $params);
 
         $this->paymentInvoker->invokeSuccessfulPayment($orderNumber);
 
@@ -760,23 +741,9 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
                 accountIban = NULL
               WHERE
                 userId = :userId';
-        } else {
-            $sql = '
-              UPDATE
-                bestit_payolution_userCheck
-              SET
-                errorMessage = :errorMessage
-              WHERE
-                userId = :userId
-              AND
-                paymentId = :paymentId';
-            $params[':paymentId'] = $user['additional']['user']['paymentID'];
+
+            $this->dbAdapter->query($sql, [':errorMessage' => 'rejected', ':userId' => $user['additional']['user']['id']]);
         }
-
-        $params[':errorMessage'] = 'rejected';
-        $params[':userId'] = $user['additional']['user']['id'];
-
-        $this->dbAdapter->query($sql, $params);
 
         return $this->redirect([
             'controller' => 'checkout',
@@ -801,14 +768,13 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
         $basket = $this->getBasket();
 
         if (!$context) {
-            $context = $this->requestContextFactory->create($user);
+            $context = $this->requestContextFactory->create();
         }
         $taxFree = $this->getCountryTaxFree($user['additional']['country']['id']);
         $requestOptions = new RequestOptions(
             $basket,
             $user,
-            filter_var($taxFree, FILTER_VALIDATE_BOOLEAN),
-            false
+            filter_var($taxFree, FILTER_VALIDATE_BOOLEAN)
         );
 
         $b2bRequestParams = $this->b2bRequestBuilder->buildRequest($requestOptions, $context);
@@ -877,24 +843,6 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
         $requestParams = $this->requestArray->createArray($basket, $user, false, $mode, $taxFree);
         $requestParams['setIDENTIFICATIONTRANSACTIONID'] = $this->createPaymentUniqueId();
         $requestParams['setPRESENTATIONUSAGE'] = 'Trx ' . $this->createPaymentUniqueId();
-
-        if ($mode !== 'PAYOLUTION_INS') {
-            $uniqueId = $this->dbAdapter->fetchOne(
-                'SELECT
-                      uniqueId
-                    FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId',
-                array(
-                    ':userId' => $user['additional']['user']['id'],
-                    ':paymentId' => $user['additional']['user']['paymentID']
-                )
-            );
-            $requestParams['setCRITERIONPAYOLUTIONPRECHECKID'] = $uniqueId;
-        }
 
         return $requestParams;
     }

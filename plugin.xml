@@ -5,7 +5,7 @@
     <label lang="de">Payolution Payment</label>
     <label lang="en">Payolution Payment</label>
 
-    <version>6.2.0</version>
+    <version>7.0.0</version>
     <author><![CDATA[best it Consulting GmbH & Co. KG]]></author>
     <copyright>(c) by best it AG</copyright>
     <compatibility minVersion="5.2.0" />
@@ -53,6 +53,11 @@
             <p>Our team is at your service: <a target="_blank" href="https://payolution.com/merchant/contact/">contact us.</a><br></p>
         ]]>
     </description>
+
+    <changelog version="7.0.0">
+        <changes>Remove database table bestit_payolution_userCheck and references</changes>
+        <changes lang="de">Datenbanktabelle bestit_payolution_userCheck und Referenzen entfernt</changes>
+    </changelog>
 
     <changelog version="6.2.0">
         <changes>Added compatibility for SW 5.7</changes>

@@ -23,11 +23,6 @@ class RequestOptions
     /**
      * @var bool
      */
-    private $preCheck;
-
-    /**
-     * @var bool
-     */
     private $taxFree;
 
     /**
@@ -36,14 +31,12 @@ class RequestOptions
      * @param array $basket
      * @param array $user
      * @param bool $taxFree
-     * @param bool $preCheck
      */
-    public function __construct(array $basket, array $user, $taxFree, $preCheck)
+    public function __construct(array $basket, array $user, $taxFree)
     {
         $this->basket = $basket;
         $this->user = $user;
         $this->taxFree = $taxFree;
-        $this->preCheck = $preCheck;
     }
 
     /**
@@ -64,16 +57,6 @@ class RequestOptions
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Is PreCheck
-     *
-     * @return bool
-     */
-    public function isPreCheck()
-    {
-        return $this->preCheck;
     }
 
     /**

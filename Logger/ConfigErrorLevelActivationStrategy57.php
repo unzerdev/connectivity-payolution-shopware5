@@ -43,7 +43,7 @@ class ConfigErrorLevelActivationStrategy57 implements ActivationStrategyInterfac
      *
      * @return Boolean
      */
-    public function isHandlerActivated(array $record)
+    public function isHandlerActivated(array $record): bool
     {
         if ($this->isLoggingActiveCache === null) {
             $this->isLoggingActiveCache = $this->configLoader->loadCurrentConfig()->isLogging();

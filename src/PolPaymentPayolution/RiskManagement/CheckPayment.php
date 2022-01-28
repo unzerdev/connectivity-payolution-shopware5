@@ -122,30 +122,6 @@ class CheckPayment
             if ($parameter[2]['payolution']['mode'] === 'PAYOLUTION_INS') {
                 return false;
             }
-            $payolutionPreCheck = Shopware()->Db()->fetchRow(
-                'SELECT
-                  addressHash,
-                  decline,
-                  basketValue,
-                  lastCheck
-                FROM
-                  bestit_payolution_userCheck
-                WHERE
-                  userId = :userId
-                AND
-                  paymentId = :paymentId',
-                array(
-                    ':userId' => $parameter[2]['additional']['user']['id'],
-                    ':paymentId' => $parameter[0]
-                )
-            );
-
-            $addressHash = md5(
-                json_encode($parameter[2]['billingaddress'])
-                .json_encode($parameter[2]['shippingaddress'])
-                .Shopware()->Shop()->getCurrency()->getId()
-                .Shopware()->Shop()->getId()
-            );
 
             if ($parameter[2]['payolution']['mode'] === 'PAYOLUTION_ELV') {
                 $parameter[2]['payolution_elv'] = Shopware()->Db()->fetchRow(
@@ -159,7 +135,6 @@ class CheckPayment
                         ':userId' => $parameter[2]['additional']['user']['id'],
                     )
                 );
-                $addressHash = md5($addressHash.json_encode($parameter[2]['payolution_elv']));
             }
 
             $taxFree = Shopware()->Db()->fetchOne(
@@ -182,119 +157,55 @@ class CheckPayment
                 $parameter[1]['AmountWithTaxNumeric'] = $parameter[1]['AmountNetNumeric'];
             }
 
-            $AmountNumeric = (string) $parameter[1]['AmountWithTaxNumeric'];
+            $requestWrapper = $this->requestWrapper;
 
-            if ($payolutionPreCheck['addressHash'] != $addressHash
-                || $payolutionPreCheck['basketValue'] != $AmountNumeric) {
+            $user = $parameter[2];
+            $basket = $parameter[1];
+            $mode = $parameter[2]['payolution']['mode'];
+            // Do B2B Pre Check Payment
+            if ($mode === 'PAYOLUTION_INVOICE_B2B') {
 
-                $requestWrapper = $this->requestWrapper;
+                $context = $this->requestContextFactory->create();
 
-                $user = $parameter[2];
-                $basket = $parameter[1];
-                $mode = $parameter[2]['payolution']['mode'];
-                // Do B2B Pre Check Payment
-                if ($mode === 'PAYOLUTION_INVOICE_B2B') {
-
-                    $context = $this->requestContextFactory->create($user);
-
-                    $requestOptions = new RequestOptions(
-                        $basket,
-                        $user,
-                        filter_var($taxFree, FILTER_VALIDATE_BOOLEAN),
-                        true
-                    );
-                    $b2bRequestBuilder = $this->requestBuilder;
-                    $postData = $b2bRequestBuilder->buildRequest($requestOptions, $context);
-                } else {
-                    $requestParams = $this->requestArrayCreator->createArray($basket, $user, true, $mode, $taxFree);
-
-                    if ($mode === 'PAYOLUTION_ELV') {
-                        $data = new ELVPreCheck();
-                    } else {
-                        $data = new PreCheckPayment();
-                    }
-
-                    foreach ($requestParams as $method => $value) {
-                        $data->$method($value);
-                    }
-
-                    if ($mode === 'PAYOLUTION_ELV') {
-                        $postData = ElvPreCheckCreatePostParam::createParams($data, $this->payolutionConfig);
-
-                    } else {
-                        $postData = PreCheckCreatePostParam::createParams($data, $this->payolutionConfig);
-                    }
-                }
-
-                $return = $requestWrapper->doRequest($postData);
-
-
-                $sql = '
-                REPLACE INTO
-                 bestit_payolution_userCheck
-                (
-                `userId`,
-                `paymentId`,
-                `decline`,
-                `addressHash`,
-                `uniqueId`,
-                `lastCheck`,
-                `basketValue`
-                )
-                VALUES
-                (
-                :userId,
-                :paymentId,
-                :decline,
-                :addressHash,
-                :uniqueId,
-                :lastCheck,
-                :basketValue
-                )';
-
-                $params = array(
-                    ':userId' => $parameter[2]['additional']['user']['id'],
-                    ':paymentId' => $parameter[0],
-                    ':decline' => 0,
-                    ':addressHash' => $addressHash,
-                    ':uniqueId' => $return['IDENTIFICATION_UNIQUEID'],
-                    ':lastCheck' => time(),
-                    ':basketValue' => $AmountNumeric
+                $requestOptions = new RequestOptions(
+                    $basket,
+                    $user,
+                    filter_var($taxFree, FILTER_VALIDATE_BOOLEAN)
                 );
-
-                if ($return['PROCESSING_STATUS_CODE'] == '90' || $return['PROCESSING_STATUS_CODE'] == '00') {
-                    Shopware()->Db()->query($sql, $params);
-                    return true;
-                } else {
-                    $params[':decline'] = 1;
-                    Shopware()->Db()->query($sql, $params);
-                    return array(
-                        'payment' => $parameter[2]['payolution']['mode'],
-                        'message' => 'rejected',
-                    );
-                }
+                $b2bRequestBuilder = $this->requestBuilder;
+                $postData = $b2bRequestBuilder->buildRequest($requestOptions, $context);
             } else {
-                $decline = Shopware()->Db()->fetchOne(
-                    'SELECT
-                      decline
-                    FROM
-                      bestit_payolution_userCheck
-                    WHERE
-                      userId = :userId
-                    AND
-                      paymentId = :paymentId',
-                    array(
-                        ':userId' => $parameter[2]['additional']['user']['id'],
-                        ':paymentId' => $parameter[0],
-                    )
-                );
+                $requestParams = $this->requestArrayCreator->createArray($basket, $user, true, $mode, $taxFree);
 
-                if ($decline == 1) {
-                    return false;
+                if ($mode === 'PAYOLUTION_ELV') {
+                    $data = new ELVPreCheck();
                 } else {
-                    return true;
+                    $data = new PreCheckPayment();
+                }
+
+                foreach ($requestParams as $method => $value) {
+                    $data->$method($value);
+                }
+
+                if ($mode === 'PAYOLUTION_ELV') {
+                    $postData = ElvPreCheckCreatePostParam::createParams($data, $this->payolutionConfig);
+
+                } else {
+                    $postData = PreCheckCreatePostParam::createParams($data, $this->payolutionConfig);
                 }
             }
+
+            $return = $requestWrapper->doRequest($postData);
+
+            if ($return['PROCESSING_STATUS_CODE'] == '90' || $return['PROCESSING_STATUS_CODE'] == '00') {
+                return true;
+            } else {
+                return array(
+                    'payment' => $parameter[2]['payolution']['mode'],
+                    'message' => 'rejected',
+                );
+            }
+
         }
     }
 
