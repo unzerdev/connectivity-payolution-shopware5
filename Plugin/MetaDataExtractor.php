@@ -58,18 +58,6 @@ class MetaDataExtractor
     }
 
     /**
-     * Get the minimum shopware version if set
-     *
-     * @return string|null
-     */
-    public function getMinShopwareVersion()
-    {
-        $metaData = $this->getMetaData();
-
-        return isset($metaData['compatibility']['minVersion']) ? $metaData['compatibility']['minVersion'] : null;
-    }
-
-    /**
      * Get meta data from the configured file
      *
      * @return array

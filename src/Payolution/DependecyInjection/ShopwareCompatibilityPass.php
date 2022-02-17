@@ -3,7 +3,6 @@
 namespace Payolution\DependecyInjection;
 
 use Payolution\Client\PayolutionClient57;
-use PolPaymentPayolution\Logger\ConfigErrorLevelActivationStrategy57;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -41,12 +40,6 @@ class ShopwareCompatibilityPass implements CompilerPassInterface
 
         if (version_compare($this->shopwareVersion, '5.7', '>=')) {
             $clientDefinition->setClass(PayolutionClient57::class);
-        }
-
-        $strategyDefinition = $container->getDefinition('pol_payment_payolution.plugin_logger.config_error_level_activation_strategy');
-
-        if (version_compare($this->shopwareVersion, '5.7', '>=')) {
-            $strategyDefinition->setClass(ConfigErrorLevelActivationStrategy57::class);
         }
     }
 }

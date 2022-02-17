@@ -8,7 +8,7 @@
     <version>7.0.0</version>
     <author><![CDATA[best it Consulting GmbH & Co. KG]]></author>
     <copyright>(c) by best it AG</copyright>
-    <compatibility minVersion="5.2.0" />
+    <compatibility minVersion="5.6.0" />
     <license>MIT</license>
     <description lang="de">
         <![CDATA[

@@ -27,7 +27,6 @@
     var payolutionFieldEmptyError = "{s name='form/general/error/empty'}Bitte füllen Sie das folgende Feld aus.{/s}";
     var payolutionCompanyTypeNotSelectedError = "{s name='form/company/field/type/error/unselected'}Bitte wählen Sie eine Organisationsform aus.{/s}";
 
-    var ShopwareVersion = '{$ShopwareVersion}';
     var Controller = '{$payolutionControllerCheck}';
 
     var installmentPreCheckCheckoutUrl = '{url controller='PolPaymentPayolution' action='installmentCheckoutPreCheck'}';

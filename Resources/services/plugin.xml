@@ -12,7 +12,6 @@
             <argument id="shopware_attribute.crud_service" type="service"/>
             <argument id="translation" type="service"/>
             <argument>%pol_payment_payolution.plugin_name%</argument>
-            <argument>%pol_payment_payolution.shopware_version%</argument>
             <argument>%pol_payment_payolution.plugin_dir%</argument>
         </service>
 
