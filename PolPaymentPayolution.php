@@ -148,11 +148,10 @@ class PolPaymentPayolution extends Plugin
 
             $this->installer = new Installer(
                 $this->container->get('shopware.plugin_payment_installer'),
-                $models = $this->container->get('models'),
+                $this->container->get('models'),
                 $this->container->get('shopware_attribute.crud_service'),
                 $this->getTranslationComponent($version),
                 $this->getName(),
-                $version,
                 $this->getPath()
             );
         }

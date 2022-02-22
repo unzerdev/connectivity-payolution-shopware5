@@ -14,24 +14,17 @@ class PluginLogger implements LoggerInterface
     /** @var Logger */
     private $logger;
 
-    /** @var ConfigLoader */
-    private $configLoader;
-
     /** @var null|bool */
     private $isLogging;
 
     public function __construct(Logger $logger, ConfigLoader $configLoader)
     {
         $this->logger       = $logger;
-        $this->configLoader = $configLoader;
+        $this->isLogging    = $configLoader->loadCurrentConfig()->isLogging();
     }
 
     public function addRecord(int $level, string $message, array $context = []): bool
     {
-        if ($this->isLogging === null) {
-            $this->isLogging = $this->configLoader->loadCurrentConfig()->isLogging();
-        }
-
         if ($level < Logger::ERROR && !$this->isLogging) {
             return false;
         }

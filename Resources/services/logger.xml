@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="pol_payment_payolution.logger.level">100</parameter>
     </parameters>
 
     <services>
-
         <service id="pol_payment_payolution.plugin_logger" class="PolPaymentPayolution\Logger\PluginLogger" public="true">
             <argument type="service" id="pol_payment_payolution.logger"/>
             <argument type="service" id="payolution.config.config_loader"/>
         </service>
-
     </services>
 </container>

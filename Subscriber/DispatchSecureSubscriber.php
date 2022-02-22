@@ -78,7 +78,7 @@ class DispatchSecureSubscriber implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PostDispatchSecure' => 'onActionPostDispatchSecure'
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onActionPostDispatchSecure'
         ];
     }
 
@@ -94,10 +94,6 @@ class DispatchSecureSubscriber implements SubscriberInterface
         /** @var Enlight_Controller_Action $controller */
         $controller = $args->getSubject();
         $request = $controller->Request();
-
-        if ($request->getModuleName() !== 'frontend') {
-            return;
-        }
 
         $controllerName = $request->getControllerName();
         $actionName = $request->getActionName();
