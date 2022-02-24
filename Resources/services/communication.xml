@@ -101,7 +101,7 @@
                  public="true">
             <argument>%pol_payment_payolution.plugin_name%</argument>
             <argument>%pol_payment_payolution.plugin_version%</argument>
-            <argument>%pol_payment_payolution.shopware_version%</argument>
+            <argument>%shopware.release.version%</argument>
         </service>
 
         <service class="Payolution\Request\Builder\Mapper\WorkflowMapper"

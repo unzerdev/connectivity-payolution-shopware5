@@ -133,7 +133,6 @@
                  id="polpaymentpayolution.subscriber.dispatch_secure_subscriber"
                  public="true">
             <argument>%pol_payment_payolution.plugin_dir%</argument>
-            <argument>%pol_payment_payolution.shopware_version%</argument>
             <argument id="pol_payment_payolution.util.session.session_manager" type="service"/>
             <argument id="pol_payment_payolution.component_manager.component_manager" type="service"/>
             <argument id="template" type="service"/>

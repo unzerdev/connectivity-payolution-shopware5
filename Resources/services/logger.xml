@@ -1,45 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
-        <parameter key="payolution.logging.channel">payolution</parameter>
-        <parameter key="payolution.logging.max_files">14</parameter>
+        <parameter key="pol_payment_payolution.logger.level">100</parameter>
     </parameters>
 
     <services>
-        <service id="pol_payment_payolution.plugin_logger.processor.uid" class="Monolog\Processor\UidProcessor" public="false"/>
-        <service id="pol_payment_payolution.plugin_logger.processor.memory_usage_processor" class="Monolog\Processor\MemoryUsageProcessor" public="false"/>
-
-        <service id="pol_payment_payolution.plugin_logger.rotating_file_handler" class="Monolog\Handler\RotatingFileHandler" public="false">
-            <argument>%kernel.logs_dir%/payolution_%kernel.environment%.log</argument>
-            <argument>%payolution.logging.max_files%</argument>
-            <call method="pushProcessor">
-                <argument type="service" id="pol_payment_payolution.plugin_logger.processor.uid"/>
-            </call>
-            <call method="pushProcessor">
-                <argument type="service" id="pol_payment_payolution.plugin_logger.processor.memory_usage_processor"/>
-            </call>
-        </service>
-
-        <service id="pol_payment_payolution.plugin_logger" class="Monolog\Logger" public="true">
-            <argument>%payolution.logging.channel%</argument>
-            <call method="pushHandler">
-                <argument type="service" id="pol_payment_payolution.plugin_logger.fingers_crossed_handler"/>
-            </call>
-        </service>
-
-        <service class="Monolog\Handler\FingersCrossedHandler" id="pol_payment_payolution.plugin_logger.fingers_crossed_handler"
-                 public="true">
-            <argument id="pol_payment_payolution.plugin_logger.rotating_file_handler" type="service"/>
-            <argument id="pol_payment_payolution.plugin_logger.config_error_level_activation_strategy" type="service"/>
-        </service>
-
-        <service class="PolPaymentPayolution\Logger\ConfigErrorLevelActivationStrategy"
-                 id="pol_payment_payolution.plugin_logger.config_error_level_activation_strategy"
-                 public="true">
-            <argument id="payolution.config.config_loader" type="service"/>
+        <service id="pol_payment_payolution.plugin_logger" class="PolPaymentPayolution\Logger\PluginLogger" public="true">
+            <argument type="service" id="pol_payment_payolution.logger"/>
+            <argument type="service" id="payolution.config.config_loader"/>
         </service>
     </services>
 </container>

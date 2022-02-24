@@ -23,13 +23,6 @@ use Shopware_Components_Translation;
 class Installer
 {
     /**
-     * The minimum php version
-     *
-     * @var string
-     */
-    const MIN_PHP_VERSION = '5.6.4';
-
-    /**
      * Mapping for the payment translations
      *
      * @var array
@@ -71,11 +64,6 @@ class Installer
     /**
      * @var string
      */
-    private $shopwareVersion;
-
-    /**
-     * @var string
-     */
     private $pluginDirectory;
 
     /**
@@ -86,7 +74,6 @@ class Installer
      * @param CrudService $crudService
      * @param Shopware_Components_Translation $translator
      * @param string $pluginName
-     * @param string $shopwareVersion
      * @param string $pluginDirectory
      */
     public function __construct(
@@ -95,7 +82,6 @@ class Installer
         CrudService $crudService,
         Shopware_Components_Translation $translator,
         $pluginName,
-        $shopwareVersion,
         $pluginDirectory
     ) {
         $this->paymentInstaller = $paymentInstaller;
@@ -103,7 +89,6 @@ class Installer
         $this->crudService = $crudService;
         $this->translator = $translator;
         $this->pluginName = $pluginName;
-        $this->shopwareVersion = $shopwareVersion;
         $this->pluginDirectory = $pluginDirectory;
     }
 
@@ -194,7 +179,6 @@ sql;
      */
     public function syncPlugin()
     {
-        $this->checkRequirements();
         $this->createPayments();
         $this->installOrUpdateDocuments();
         $this->modifySchema();
@@ -499,33 +483,6 @@ sql;
                 ('holder', '34')
             ON DUPLICATE KEY UPDATE `order` = VALUES(`order`)
         ");
-    }
-
-    /**
-     * Check the requirements of the plugin and throws an exception if one requirement is not given
-     *
-     * @return void
-     *
-     * @throws Enlight_Exception
-     */
-    private function checkRequirements()
-    {
-        $requiredShopwareVersion = (new MetaDataExtractor($this->pluginDirectory))->getMinShopwareVersion();
-
-        if (version_compare($this->shopwareVersion, $requiredShopwareVersion, '<=')) {
-            throw new Enlight_Exception(
-                'This plugin needs minimum Shopware ' . $requiredShopwareVersion
-            );
-        }
-
-        // Check PHP version
-        if (!version_compare(phpversion(), self::MIN_PHP_VERSION, '>=')) {
-            throw new Enlight_Exception('This plugin needs minimum PHP ' . self::MIN_PHP_VERSION);
-        }
-
-        if (!function_exists('curl_init')) {
-            throw new Enlight_Exception('This plugin requires the following php module to be active: curl');
-        }
     }
 
     /**

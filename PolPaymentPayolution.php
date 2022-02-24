@@ -15,7 +15,6 @@ use PolPaymentPayolution\Setup\Installer;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -127,14 +126,9 @@ class PolPaymentPayolution extends Plugin
             (new MetaDataExtractor($this->getPath()))->getPluginVersion()
         );
 
-        $shopwareVersion = $container->hasParameter('shopware.release.version')
-            ? $container->getParameter('shopware.release.version')
-            : Shopware::VERSION;
-        $container->setParameter($this->getContainerPrefix() . '.shopware_version', $shopwareVersion);
-
         $container->addCompilerPass(new SaveHandlerPass());
         $container->addCompilerPass(
-            new ShopwareCompatibilityPass((string) $shopwareVersion)
+            new ShopwareCompatibilityPass((string) $container->getParameter('shopware.release.version'))
         );
 
         parent::build($container);
@@ -154,11 +148,10 @@ class PolPaymentPayolution extends Plugin
 
             $this->installer = new Installer(
                 $this->container->get('shopware.plugin_payment_installer'),
-                $models = $this->container->get('models'),
+                $this->container->get('models'),
                 $this->container->get('shopware_attribute.crud_service'),
                 $this->getTranslationComponent($version),
                 $this->getName(),
-                $version,
                 $this->getPath()
             );
         }

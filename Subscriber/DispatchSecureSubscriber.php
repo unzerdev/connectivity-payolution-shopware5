@@ -19,10 +19,6 @@ use PolPaymentPayolution\Util\Session\SessionManager;
  */
 class DispatchSecureSubscriber implements SubscriberInterface
 {
-    /**
-     * @var string
-     */
-    private $shopwareVersion;
 
     /**
      * @var string
@@ -53,7 +49,6 @@ class DispatchSecureSubscriber implements SubscriberInterface
      * DispatchSecureSubscriber constructor.
      *
      * @param string $pluginDirectory
-     * @param string $shopwareVersion
      * @param SessionManager $sessionManager
      * @param ComponentManager $componentManager
      * @param Enlight_Template_Manager $templateManager
@@ -61,14 +56,12 @@ class DispatchSecureSubscriber implements SubscriberInterface
      */
     public function __construct(
         $pluginDirectory,
-        $shopwareVersion,
         SessionManager $sessionManager,
         ComponentManager $componentManager,
         Enlight_Template_Manager $templateManager,
         ConfigLoader $configLoader
     ) {
         $this->pluginDirectory = $pluginDirectory;
-        $this->shopwareVersion = $shopwareVersion;
         $this->sessionManager = $sessionManager;
         $this->componentManager = $componentManager;
         $this->templateManager = $templateManager;
@@ -85,7 +78,7 @@ class DispatchSecureSubscriber implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PostDispatchSecure' => 'onActionPostDispatchSecure'
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onActionPostDispatchSecure'
         ];
     }
 
@@ -101,10 +94,6 @@ class DispatchSecureSubscriber implements SubscriberInterface
         /** @var Enlight_Controller_Action $controller */
         $controller = $args->getSubject();
         $request = $controller->Request();
-
-        if ($request->getModuleName() !== 'frontend') {
-            return;
-        }
 
         $controllerName = $request->getControllerName();
         $actionName = $request->getActionName();
@@ -139,7 +128,5 @@ class DispatchSecureSubscriber implements SubscriberInterface
         } else {
             $view->assign('payolutionControllerCheck', false);
         }
-
-        $view->assign('ShopwareVersion', $this->shopwareVersion);
     }
 }
