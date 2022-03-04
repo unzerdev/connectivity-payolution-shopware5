@@ -1,4 +1,5 @@
 <?php
+
 namespace Payolution\Request\Installment;
 
 use Payolution\Client\ClientInterface;
@@ -24,18 +25,21 @@ class GetDocument
     public function __construct(AbstractConfig $payolutionConfig, ClientInterface $client)
     {
         $this->payolutionConfig = $payolutionConfig;
-        $this->client = $client;
+        $this->client           = $client;
     }
 
     public function doRequest($url): string
     {
         $requestOptions = new RequestOptions('get', RequestEnums::REQUEST_TYPE, $url);
-        $request = new Request([
-            'auth' => [
-                $this->payolutionConfig->getInstallmentPayolutionUser(),
-                $this->payolutionConfig->getInstallmentPayolutionPassword()
-            ]
-        ], $requestOptions);
+        $request        = new Request(
+            [
+                'auth' => [
+                    $this->payolutionConfig->getInstallmentPayolutionUser(),
+                    $this->payolutionConfig->getInstallmentPayolutionPassword(),
+                ],
+            ],
+            $requestOptions
+        );
 
         try {
             $response = $this->client->executeRequest($request);

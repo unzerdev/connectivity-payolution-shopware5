@@ -319,11 +319,9 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
 
         $postData = $this->getPostData($mode, $data, $payolutionConfig);
 
-        $response = $this->requestWrapper->doRequest($postData);
-
         return array(
             'request' => $requestParams,
-            'response' => $response,
+            'response' => $this->requestWrapper->doRequest($postData),
             'payment' => $mode
         );
     }
