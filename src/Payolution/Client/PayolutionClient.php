@@ -3,6 +3,9 @@
 namespace Payolution\Client;
 
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Message\MessageFactory;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Url;
 use Payolution\Converter\LatinConverter;
 use Payolution\Exception\ClientException;
 use Payolution\Request\RequestEnums;
@@ -21,133 +24,84 @@ use Psr\Log\LoggerInterface;
  */
 class PayolutionClient implements ClientInterface
 {
-    /**
-     * @var GuzzleClient
-     */
-    private $guzzleClient;
-
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
-    /**
-     * @var SessionRequestDecorator
-     */
+    /** @var SessionRequestDecorator */
     private $requestDecorator;
 
-    /**
-     * @var LatinConverter
-     */
+    /** @var LatinConverter */
     private $converter;
 
-    /**
-     * PayolutionClient constructor.
-     *
-     * @param GuzzleClient $guzzleClient
-     * @param LoggerInterface $logger
-     * @param SessionRequestDecorator $requestDecorator
-     * @param LatinConverter $converter
-     */
+    /** @var int */
+    private $retryCounter = 0;
+
     public function __construct(
-        GuzzleClient $guzzleClient,
         LoggerInterface $logger,
         SessionRequestDecorator $requestDecorator,
         LatinConverter $converter
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->logger = $logger;
+        $this->logger           = $logger;
         $this->requestDecorator = $requestDecorator;
-        $this->converter = $converter;
+        $this->converter        = $converter;
     }
 
-    /**
-     * Executes the given request
-     *
-     * @param RequestInterface $request
-     *
-     * @param int $try
-     * @return ResponseInterface
-     *
-     * @throws ClientException
-     */
-    public function executeRequest(RequestInterface $request, $try = 0)
+    public function executeRequest(RequestInterface $request): ResponseInterface
     {
-        $type = $request->getMethod();
-
         $this->decoratePayload($request);
-        $requestInterface = $this->guzzleClient->createRequest(
-            $type,
-            $request->getEndPoint(),
-            $request->getPayload()
-        );
 
-        try {
-            $response = $this->guzzleClient->send($requestInterface);
-        } catch (TransferException $e) {
-            //Retry three times on exception
-            $try++;
-            if ($try <= 2) {
-                $this->logger->warning('retry request');
-                return $this->executeRequest($request, $try);
-            }
+        $curl = curl_init();
 
-            $message = $this->getGuzzleError($e);
-            $this->logger->error($message);
-            throw new ClientException($message);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        curl_setopt($curl, CURLOPT_TIMEOUT, 60);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60);
+
+        if ($request->getMethod() === 'post') {
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getPayload()['body']));
         }
 
-        if (!$response->getBody()) {
-            throw new ClientException('error in payment client response, invalid body');
+        if (!empty($request->getPayload()['auth'])) {
+            curl_setopt($curl, CURLOPT_USERPWD, implode(':', $request->getPayload()['auth']));
         }
 
-        return new Response($response);
+        curl_setopt($curl, CURLOPT_URL, $request->getEndPoint());
+
+        $rawResponse = (string)curl_exec($curl);
+        $curlStatus  = curl_errno($curl);
+        $httpStatus  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        curl_close($curl);
+
+        if ($curlStatus !== CURLE_OK || $httpStatus === 500) {
+            return $this->retryRequest($request);
+        }
+
+        return new Response($rawResponse);
     }
 
-    /**
-     * Log Guzzle Exception to Logger
-     *
-     * @param TransferException $exception
-     * @return string
-     */
-    private function getGuzzleError(TransferException $exception)
+    private function retryRequest(RequestInterface $request): ResponseInterface
     {
-        $body = '';
-        $headers = [];
+        ++$this->retryCounter;
 
-        if ($exception instanceof RequestException && $exception->hasResponse()) {
-            $body = (string) $exception->getResponse()->getBody();
-            $headers = (array) $exception->getResponse()->getHeaders();
+        if ($this->retryCounter >= 3) {
+            $this->logger->error('Error in payment client', [
+                'request' => $request,
+            ]);
+            throw new ClientException('Error in payment client');
         }
 
-        $message = sprintf(
-            'error in payment client Response Header "%s" Response Body "%s" with error "%s"',
-            json_encode($headers),
-            $body,
-            $exception->getMessage()
-        );
-
-        return $message;
+        return $this->executeRequest($request);
     }
 
-    /**
-     * Decorate Payload
-     *
-     * @param RequestInterface $request
-     *
-     * @return void
-     */
-    private function decoratePayload(RequestInterface $request)
+    private function decoratePayload(RequestInterface $request): void
     {
-        $payload = $request->getPayload();
+        $payload = $request->getRequestType() === RequestEnums::CI_TYPE
+            ? $this->requestDecorator->appendSessionCI($request->getPayload())
+            : $this->requestDecorator->appendSession($request->getPayload());
 
-        if ($request->getRequestType() === RequestEnums::CI_TYPE) {
-            $payload = $this->requestDecorator->appendSessionCI($payload);
-        } else {
-            $payload = $this->requestDecorator->appendSession($payload);
-        }
-
-        // Convert values to latin
         $payload = $this->converter->convert($payload);
 
         $request->setPayload($payload);

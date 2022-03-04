@@ -13,33 +13,17 @@ use Payolution\Exception\ResponseParseException;
 class Response implements ResponseInterface
 {
     /**
-     * @var mixed
+     * @var string
      */
-    private $message;
+    private $data;
 
-    /**
-     * Response constructor.
-     *
-     * @param mixed $message
-     */
-    public function __construct($message)
+    public function __construct(string $message)
     {
-        $this->message = $message;
+        $this->data = $message;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getResponseData()
+    public function getData(): string
     {
-        if (!method_exists($this->message, 'getBody')) {
-            throw new ResponseParseException('Invalid response found');
-        }
-
-        if (!$body = $this->message->getBody()) {
-            throw new ResponseParseException('error in response, invalid body');
-        }
-
-        return (string) $body->getContents();
+        return $this->data;
     }
 }

@@ -23,9 +23,9 @@ final class RequestEnums
 
     const PAYMENT_ENDPOINT = 'ctpe/post';
 
-    const CI_TYPE = 1;
+    const CI_TYPE = 'ci_type';
 
-    const REQUEST_TYPE = 0;
+    const REQUEST_TYPE = 'request_type';
 
     /**
      * RequestEnums constructor.

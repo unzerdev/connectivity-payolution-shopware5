@@ -127,9 +127,6 @@ class PolPaymentPayolution extends Plugin
         );
 
         $container->addCompilerPass(new SaveHandlerPass());
-        $container->addCompilerPass(
-            new ShopwareCompatibilityPass((string) $container->getParameter('shopware.release.version'))
-        );
 
         parent::build($container);
     }

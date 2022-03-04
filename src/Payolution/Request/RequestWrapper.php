@@ -51,7 +51,7 @@ class RequestWrapper
      * Do Request
      *
      * @param array|string $data
-     * @param int $type
+     * @param string $type
      * @return array|mixed
      *
      * @see RequestEnums
@@ -97,18 +97,12 @@ class RequestWrapper
             return [];
         }
 
-        try {
-            $responseData = $response->getResponseData();
-        } catch (ResponseParseException $e) {
-            $responseData = '';
-        }
-
         if ($type === RequestEnums::CI_TYPE) {
-            $xmlData = @simplexml_load_string($responseData);
+            $xmlData = @simplexml_load_string($response->getData());
             $return = $xmlData ? json_decode(json_encode((array) $xmlData), true) : [];
         } else {
             $return = [];
-            parse_str($responseData, $return);
+            parse_str($response->getData(), $return);
         }
 
         $this->logger->debug(
