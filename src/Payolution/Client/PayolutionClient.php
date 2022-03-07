@@ -82,14 +82,18 @@ class PayolutionClient implements ClientInterface
         return new Response($rawResponse);
     }
 
+    /**
+     * @throws ClientException
+     */
     private function retryRequest(RequestInterface $request): ResponseInterface
     {
         ++$this->retryCounter;
 
-        if ($this->retryCounter >= 3) {
+        if ($this->retryCounter > 2) {
             $this->logger->error('Error in payment client', [
                 'request' => $request,
             ]);
+
             throw new ClientException('Error in payment client');
         }
 
