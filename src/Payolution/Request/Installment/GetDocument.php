@@ -1,8 +1,14 @@
 <?php
+
 namespace Payolution\Request\Installment;
 
+use Payolution\Client\ClientInterface;
 use Payolution\Config\AbstractConfig;
 use GuzzleHttp\Client as GuzzleClient;
+use Payolution\Exception\ClientException;
+use Payolution\Request\Model\RequestOptions;
+use Payolution\Request\Request;
+use Payolution\Request\RequestEnums;
 
 /**
  * Class GetDocument
@@ -10,43 +16,37 @@ use GuzzleHttp\Client as GuzzleClient;
  */
 class GetDocument
 {
-
+    /** @var AbstractConfig */
     private $payolutionConfig;
-    /**
-     * class constructor
-     *
-     * @param AbstractConfig $payolutionConfig
-     */
-    public function __construct(AbstractConfig $payolutionConfig)
+
+    /** @var ClientInterface */
+    private $client;
+
+    public function __construct(AbstractConfig $payolutionConfig, ClientInterface $client)
     {
         $this->payolutionConfig = $payolutionConfig;
+        $this->client           = $client;
     }
 
-    /**
-     * getting document from payolution
-     *
-     * @param $url
-     * @return \GuzzleHttp\Message\FutureResponse|\GuzzleHttp\Message\ResponseInterface|\GuzzleHttp\Ring\Future\FutureInterface|mixed|null
-     */
-    public function doRequest($url)
+    public function doRequest($url): string
     {
-        $client = new GuzzleClient();
-
-        /**
-         * get URL from Shopware Config
-         */
-        $request = $client->get($url,
-            array(
-                'auth' =>
-                    array(
-                        $this->payolutionConfig->getInstallmentPayolutionUser(),
-                        $this->payolutionConfig->getInstallmentPayolutionPassword()
-                    )
-            )
+        $requestOptions = new RequestOptions('get', RequestEnums::REQUEST_TYPE, $url);
+        $request        = new Request(
+            [
+                'auth' => [
+                    $this->payolutionConfig->getInstallmentPayolutionUser(),
+                    $this->payolutionConfig->getInstallmentPayolutionPassword(),
+                ],
+            ],
+            $requestOptions
         );
 
-        $return = $request->getBody()->getContents();
+        try {
+            $response = $this->client->executeRequest($request);
+        } catch (ClientException $e) {
+            return '';
+        }
 
-        return $return;
+        return $response->getData();
     }
 }

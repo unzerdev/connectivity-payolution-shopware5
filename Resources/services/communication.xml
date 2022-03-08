@@ -4,11 +4,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="payolution.guzzle_client" class="GuzzleHttp\ClientInterface"
-                 public="true">
-            <factory service="guzzle_http_client_factory" method="createClient"/>
-        </service>
-
         <service class="Payolution\Request\RequestWrapper"
                  id="payolution.request.request_wrapper"
                  public="true">
@@ -20,7 +15,6 @@
         <service class="Payolution\Client\PayolutionClient"
                  id="payolution.client.payolution_client"
                  public="true">
-            <argument id="payolution.guzzle_client" type="service"/>
             <argument id="pol_payment_payolution.plugin_logger" type="service"/>
             <argument id="payolution.session.session_request_decorator" type="service"/>
             <argument id="payolution.converter.latin_converter" type="service"/>
@@ -121,6 +115,7 @@
                  id="payolution.get_document_request"
                  public="true">
             <argument id="payolution.config" type="service"/>
+            <argument id="payolution.client.payolution_client" type="service"/>
         </service>
 
         <service class="Payolution\Request\Installment\Cl\GetJsLibrary"

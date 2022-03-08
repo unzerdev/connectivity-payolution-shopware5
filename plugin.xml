@@ -57,6 +57,10 @@
     <changelog version="7.0.0">
         <changes>Remove database table bestit_payolution_userCheck and references</changes>
         <changes lang="de">Datenbanktabelle bestit_payolution_userCheck und Referenzen entfernt</changes>
+        <changes>Remove custom plugin logger and use Shopware's default plugin logger</changes>
+        <changes lang="de">Entfernung des individuellen Plugin-Logger und Umstellung auf den Standard Plugin-Logger von Shopware</changes>
+        <changes>Change from Guzzle to cURL for every requests</changes>
+        <changes lang="de">Anpassung von Guzzle zu cURL für jegliche Abfragen</changes>
     </changelog>
 
     <changelog version="6.2.0">

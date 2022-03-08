@@ -2,8 +2,6 @@
 
 namespace Payolution\Response;
 
-use Payolution\Exception\ResponseParseException;
-
 /**
  * Interface ResponseInterface
  *
@@ -11,11 +9,5 @@ use Payolution\Exception\ResponseParseException;
  */
 interface ResponseInterface
 {
-    /**
-     * Get ResponseData
-     *
-     * @return string
-     * @throws ResponseParseException
-     */
-    public function getResponseData();
+    public function getData(): string;
 }

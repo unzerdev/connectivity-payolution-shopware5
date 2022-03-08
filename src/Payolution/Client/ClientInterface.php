@@ -12,11 +12,5 @@ use Payolution\Response\ResponseInterface;
  */
 interface ClientInterface
 {
-    /**
-     * Executes the given request
-     *
-     * @param RequestInterface $request
-     * @return ResponseInterface
-     */
-    public function executeRequest(RequestInterface $request);
+    public function executeRequest(RequestInterface $request): ResponseInterface;
 }
