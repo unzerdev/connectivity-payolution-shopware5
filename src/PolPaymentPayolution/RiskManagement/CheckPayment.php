@@ -170,7 +170,8 @@ class CheckPayment
                 $requestOptions = new RequestOptions(
                     $basket,
                     $user,
-                    filter_var($taxFree, FILTER_VALIDATE_BOOLEAN)
+                    filter_var($taxFree, FILTER_VALIDATE_BOOLEAN),
+                    true
                 );
                 $b2bRequestBuilder = $this->requestBuilder;
                 $postData = $b2bRequestBuilder->buildRequest($requestOptions, $context);
