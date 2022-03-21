@@ -26,46 +26,35 @@ class RequestOptions
     private $taxFree;
 
     /**
-     * RequestOptions constructor.
-     *
-     * @param array $basket
-     * @param array $user
-     * @param bool $taxFree
+     * @var bool
      */
-    public function __construct(array $basket, array $user, $taxFree)
+    private $isPreCheck;
+
+    public function __construct(array $basket, array $user, bool $taxFree, bool $isPreCheck = false)
     {
         $this->basket = $basket;
         $this->user = $user;
         $this->taxFree = $taxFree;
+        $this->isPreCheck = $isPreCheck;
     }
 
-    /**
-     * Get Basket
-     *
-     * @return array
-     */
-    public function getBasket()
+    public function getBasket(): array
     {
         return $this->basket;
     }
 
-    /**
-     * Get User
-     *
-     * @return array
-     */
-    public function getUser()
+    public function getUser(): array
     {
         return $this->user;
     }
 
-    /**
-     * Is TaxFree
-     *
-     * @return bool
-     */
-    public function isTaxFree()
+    public function isTaxFree(): bool
     {
         return $this->taxFree;
+    }
+
+    public function isPreCheck(): bool
+    {
+        return $this->isPreCheck;
     }
 }

@@ -90,6 +90,10 @@ abstract class RequestBuilderAbstract implements RequestBuilderInterface
         $this->userMapper->mapRequest($options, $context, $request);
         $this->mapArray($options, $context, $request);
 
+        if ($options->isPreCheck()) {
+            $request['CRITERION.PAYOLUTION_PRE_CHECK'] = 'TRUE';
+        }
+
         if ($referenceId = $context->getReferenceId()) {
             $this->logger->debug(sprintf('add reference id "%s" to request', $referenceId));
             $request['IDENTIFICATION.REFERENCEID'] = $referenceId;
