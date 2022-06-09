@@ -5,7 +5,7 @@
     <label lang="de">Payolution Payment</label>
     <label lang="en">Payolution Payment</label>
 
-    <version>7.x.x</version>
+    <version>7.0.1</version>
     <author><![CDATA[best it Consulting GmbH & Co. KG]]></author>
     <copyright>(c) by best it AG</copyright>
     <compatibility minVersion="5.6.0" />
@@ -54,7 +54,7 @@
         ]]>
     </description>
 
-    <changelog version="7.x.x">
+    <changelog version="7.0.1">
         <changes>Fix extension of custom document elements</changes>
         <changes lang="de">Korrektur der Ergänzung von individuellen Dokumentenelementen</changes>
     </changelog>
