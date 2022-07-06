@@ -458,6 +458,11 @@ class CheckoutSubscriber implements SubscriberInterface
                         $view->assign('installmentPcWithoutIban', $installmentPcWithoutIban);
                     }
 
+                    if ($this->sessionManager->has('b2bErrorMessage')) {
+                        $errorMessage = $this->sessionManager->get('b2bErrorMessage');
+                        $this->sessionManager->remove('b2bErrorMessage');
+                    }
+
                     if (!empty($errorMessage)) {
                         $this->logger->debug(
                             'Errors!',
@@ -552,13 +557,11 @@ class CheckoutSubscriber implements SubscriberInterface
                         $view->assign('currencyError', in_array('currency', $errorTypes, true));
 
                         if ($paymentName === 'payolution_installment') {
-                            $updateErrorSql = $this->updateErrorInstallment;
+                            $errorParam[':errorMessage'] = null;
+                            $errorParam[':userId'] = $user['additional']['user']['id'];
+
+                            $this->dbAdapter->query($this->updateErrorInstallment, $errorParam);
                         }
-
-                        $errorParam[':errorMessage'] = null;
-                        $errorParam[':userId'] = $user['additional']['user']['id'];
-
-                        $this->dbAdapter->query($updateErrorSql, $errorParam);
                     }
                 }
             } elseif ($actionName === 'confirm') {
@@ -708,6 +711,12 @@ class CheckoutSubscriber implements SubscriberInterface
                   VALUES
                     (:userId,:errorMessage)';
             }
+        }
+
+        if ($error['payment'] === 'PAYOLUTION_INVOICE_B2B') {
+            $this->sessionManager->set('b2bErrorMessage', $error['errorMessage']);
+
+            return $error['errorMessage'] !== '';
         }
 
         if (!empty($sql)) {
