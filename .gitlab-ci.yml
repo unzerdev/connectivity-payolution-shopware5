@@ -109,7 +109,11 @@ package:
   image: kellerkinder/shopware-package-plugin:latest
   stage: package
   only:
+    - tags
     - master
+    - /^integration.*$/
+    - /^fix.*$/
+
   before_script:
     - echo "" #must be set, otherwise the normal before_script will be executed
   script:
