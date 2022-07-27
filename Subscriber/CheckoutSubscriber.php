@@ -713,7 +713,7 @@ class CheckoutSubscriber implements SubscriberInterface
             }
         }
 
-        if ($error['payment'] === 'PAYOLUTION_INVOICE_B2B' || $error['payment'] === 'PAYOLUTION_INVOICE_B2C') {
+        if ($error['payment'] === 'PAYOLUTION_INVOICE_B2B' || $error['payment'] === 'PAYOLUTION_INVOICE') {
             $this->sessionManager->set('b2bErrorMessage', $error['errorMessage']);
 
             return $error['errorMessage'] !== '';
