@@ -57,8 +57,8 @@
     <changelog version="7.0.1">
         <changes>Fix extension of custom document elements</changes>
         <changes lang="de">Korrektur der Ergänzung von individuellen Dokumentenelementen</changes>
-        <changes>Added an error message for a failed precheck with B2B invoice</changes>
-        <changes lang="de">Ergänzung einer Fehlermeldung für einen fehlgeschlagenen PreCheck mit Rechnungskauf als Firma</changes>
+        <changes>Fixed error messages for rejected payments</changes>
+        <changes lang="de">Korrektur der Fehlermeldung für eine abgelehnte Zahlung</changes>
     </changelog>
 
     <changelog version="7.0.0">
