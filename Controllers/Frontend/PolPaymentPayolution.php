@@ -745,6 +745,8 @@ class Shopware_Controllers_Frontend_PolPaymentPayolution extends Shopware_Contro
             $this->dbAdapter->query($sql, [':errorMessage' => 'rejected', ':userId' => $user['additional']['user']['id']]);
         }
 
+        $this->sessionManager->set('payolutionErrorMessage', 'rejected');
+
         return $this->redirect([
             'controller' => 'checkout',
             'action' => 'shippingPayment',
