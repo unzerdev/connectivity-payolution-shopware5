@@ -458,6 +458,11 @@ class CheckoutSubscriber implements SubscriberInterface
                         $view->assign('installmentPcWithoutIban', $installmentPcWithoutIban);
                     }
 
+                    if ($this->sessionManager->has('payolutionErrorMessage')) {
+                        $errorMessage = $this->sessionManager->get('payolutionErrorMessage');
+                        $this->sessionManager->remove('payolutionErrorMessage');
+                    }
+
                     if (!empty($errorMessage)) {
                         $this->logger->debug(
                             'Errors!',
@@ -552,13 +557,11 @@ class CheckoutSubscriber implements SubscriberInterface
                         $view->assign('currencyError', in_array('currency', $errorTypes, true));
 
                         if ($paymentName === 'payolution_installment') {
-                            $updateErrorSql = $this->updateErrorInstallment;
+                            $errorParam[':errorMessage'] = null;
+                            $errorParam[':userId'] = $user['additional']['user']['id'];
+
+                            $this->dbAdapter->query($this->updateErrorInstallment, $errorParam);
                         }
-
-                        $errorParam[':errorMessage'] = null;
-                        $errorParam[':userId'] = $user['additional']['user']['id'];
-
-                        $this->dbAdapter->query($updateErrorSql, $errorParam);
                     }
                 }
             } elseif ($actionName === 'confirm') {
@@ -719,7 +722,11 @@ class CheckoutSubscriber implements SubscriberInterface
             return ($params[':errorMessage'] !== '');
         }
 
-        return false;
+        if ($error['errorMessage'] !== '') {
+            $this->sessionManager->set('payolutionErrorMessage', $error['errorMessage']);
+        }
+
+        return $error['errorMessage'] !== '';
     }
 
     /**
