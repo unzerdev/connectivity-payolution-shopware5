@@ -32,6 +32,11 @@ class ConfigContext
     const BACKEND = 'backend';
 
     /**
+     * @var string
+     */
+    const API = 'api';
+
+    /**
      * @var Enlight_Controller_Front
      */
     private $front;
@@ -154,7 +159,7 @@ class ConfigContext
         $shop = null;
         if ($module === self::FRONTEND) {
             $shop = $this->getShopFromFrontend();
-        } elseif ($module === self::BACKEND && $requestIdentifier) {
+        } elseif (($module === self::BACKEND || $module === self::API) && $requestIdentifier) {
             $shop = $this->getShopFromOrder($requestIdentifier);
         }
 
