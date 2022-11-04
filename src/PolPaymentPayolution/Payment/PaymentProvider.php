@@ -67,6 +67,7 @@ class PaymentProvider
 
         $repo = $this->componentManager->getModelManager()->getRepository(Payment::class);
 
+        /** @var Payment $model */
         if (!$model = $repo->findOneBy(['name' => $name])) {
             return false;
         }
@@ -74,9 +75,9 @@ class PaymentProvider
         $active = $model->getActive();
         $modelShops = $model->getShops();
 
-        $shopIds = array_map(function (Shop $shop) {
+        $shopIds = $modelShops->map(function(Shop $shop) {
             return $shop->getId();
-        }, $modelShops);
+        });
 
         return $active && (count($modelShops) === 0 || in_array($shopId, $shopIds, true));
     }

@@ -140,7 +140,7 @@ Ext.define('Shopware.apps.PolPaymentPayolution.Order.view.detail.Refund', {
         var me = this;
 
         me.createButton = Ext.create('Ext.button.Button', {
-            text: '{s name=action/create_refund}Refund{/s}',
+            text: '{s name="action/create_refund"}Refund{/s}',
             action: 'create-refund-positions',
             cls: 'primary',
             id: 'leftRefundButton' + me.record.internalId,
@@ -156,7 +156,7 @@ Ext.define('Shopware.apps.PolPaymentPayolution.Order.view.detail.Refund', {
         var me = this;
 
         me.createButton = Ext.create('Ext.button.Button', {
-            text: '{s name=action/create_refund}Refund{/s}',
+            text: '{s name="action/create_refund"}Refund{/s}',
             action: 'create-refund-absolute',
             cls: 'primary',
             id: 'rightRefundButton' + me.record.internalId,

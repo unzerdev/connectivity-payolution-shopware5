@@ -116,7 +116,7 @@ Ext.define('Shopware.apps.PolPaymentPayolution.Order.view.detail.Capture', {
         var me = this;
 
         me.createButton = Ext.create('Ext.button.Button', {
-            text: '{s name=action/create_capture}Capturen{/s}',
+            text: '{s name="action/create_capture"}Capturen{/s}',
             action: 'create-capture-positions',
             id: 'leftCaptureButton' + me.record.internalId,
             disabled: true,
@@ -132,7 +132,7 @@ Ext.define('Shopware.apps.PolPaymentPayolution.Order.view.detail.Capture', {
         var me = this;
 
         me.createButton = Ext.create('Ext.button.Button', {
-            text: '{s name=action/create_capture}Capturen{/s}',
+            text: '{s name="action/create_capture"}Capturen{/s}',
             id: 'rightCaptureButton' + me.record.internalId,
             action: 'create-capture-absolute',
             disabled: true,

@@ -1,6 +1,6 @@
 Ext.define('Shopware.apps.PayolutionConfig.view.main.Window', {
     extend: 'Enlight.app.Window',
-    title: '{s name=window_title}Payolution Konfiguration{/s}',
+    title: '{s name="window_title"}Payolution Konfiguration{/s}',
     alias: 'widget.payolution-config-window',
     autoShow: true,
     layout: 'fit',
