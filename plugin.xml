@@ -54,6 +54,11 @@
         ]]>
     </description>
 
+    <changelog version="Unreleased">
+        <changes>Fix handling of API calls triggering the automatic capture or refund</changes>
+        <changes lang="de">Korrektur der Handhabung von API-Aufrufen für die Auslösung von automatischen Erfassungen oder Rückerstattungen</changes>
+    </changelog>
+
     <changelog version="7.0.1">
         <changes>Fix extension of custom document elements</changes>
         <changes lang="de">Korrektur der Ergänzung von individuellen Dokumentenelementen</changes>
