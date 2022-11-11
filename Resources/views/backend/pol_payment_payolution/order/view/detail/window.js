@@ -3,7 +3,7 @@
 Ext.define('Shopware.apps.PolPaymentPayolution.Order.view.detail.Window', {
     override: 'Shopware.apps.Order.view.detail.Window',
 
-    payolutionTabName: '{s name=order/payolution_window_title}Payolution{/s}',
+    payolutionTabName: '{s name="order/payolution_window_title"}Payolution{/s}',
 
     /**
      * @override

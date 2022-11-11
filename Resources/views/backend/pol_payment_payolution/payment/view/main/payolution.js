@@ -5,7 +5,7 @@ Ext.define('Shopware.apps.PolPaymentPayolution.Payment.view.main.Payolution', {
     tabConfig: {
       cls: 'payolutionConfig'
     },
-    title: '{s name=window_title}Payolution Konfiguration{/s}',
+    title: '{s name="window_title"}Payolution Konfiguration{/s}',
     alias: 'widget.payolution-config-window',
     autoShow: true,
     layout: 'auto',
