@@ -36,6 +36,7 @@
         </label>
         <div class="block">
             <input id="payolution-b2b-form--vatnumber-input" type="text" name="payolution[{$payolutionPaymentMethod}][vatid]"
+                   class="payolution-form--not-required-field"
                    value="{$sUserData.billingaddress.ustid}">
         </div>
     </div>

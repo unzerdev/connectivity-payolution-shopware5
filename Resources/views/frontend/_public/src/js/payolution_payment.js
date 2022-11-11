@@ -33,6 +33,7 @@
             isFirstClass: 'is--first',
             isLastClass: 'is--last',
             isRemovableClass: 'is--removable',
+            isPayolutionFormNotRequiredClass: 'payolution-form--not-required-field',
 
             errorMessageContainerClass: 'payolution-error--container',
 
@@ -258,7 +259,7 @@
             $.each(inputFields, function (key, field) {
                 var $field = $(field);
 
-                if ($field.val() === '') {
+                if ($field.val() === '' && !$field.hasClass(opts.isPayolutionFormNotRequiredClass)) {
 
                     me.addErrorByField(
                         $field,
