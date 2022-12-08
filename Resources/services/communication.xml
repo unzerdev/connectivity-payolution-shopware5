@@ -51,7 +51,12 @@
 
         <service id="payolution.create_request_array_from_shopware"
                  class="PolPaymentPayolution\Request\CreateRequestArray"
-                 public="true"/>
+                 public="true">
+            <argument type="service" id="shop"/>
+            <argument type="service" id="db"/>
+            <argument>%pol_payment_payolution.plugin_name%</argument>
+            <argument>%pol_payment_payolution.plugin_version%</argument>
+        </service>
 
         <service class="Payolution\Request\Builder\RequestContextFactory"
                  id="payolution.request.builder.request_context_factory"

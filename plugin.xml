@@ -57,6 +57,12 @@
     <changelog version="Unreleased">
         <changes>Fix handling of API calls triggering the automatic capture or refund</changes>
         <changes lang="de">Korrektur der Handhabung von API-Aufrufen für die Auslösung von automatischen Erfassungen oder Rückerstattungen</changes>
+        <changes>Added compatibility to PHP 8.0</changes>
+        <changes lang="de">Kompatibilität zu PHP 8.0 hergestellt</changes>
+        <changes>Change vat it input for B2B to non-mandatory</changes>
+        <changes lang="de">Anpassung der USt-ID Eingabe für Unternehmen zu optional</changes>
+        <changes>Fix component "CreateRequestArray" to use dependency injection and the correct plugin version</changes>
+        <changes lang="de">Korrektur der Komponente "CreateRequestArray" für die Nutzung der Dependency-Injection und der korrekten Plugin-Version</changes>
     </changelog>
 
     <changelog version="7.0.1">

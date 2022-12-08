@@ -1,8 +1,36 @@
 <?php
 namespace PolPaymentPayolution\Request;
 
+use Enlight_Components_Db_Adapter_Pdo_Mysql;
+use Shopware\Models\Shop\Shop;
+
 class CreateRequestArray
 {
+
+    /** @var Shop */
+    private $shop;
+
+    /** @var Enlight_Components_Db_Adapter_Pdo_Mysql */
+    private $db;
+
+    /** @var string */
+    private $pluginName;
+
+    /** @var string */
+    private $pluginVersion;
+
+    public function __construct(
+        Shop $shop,
+        Enlight_Components_Db_Adapter_Pdo_Mysql $db,
+        string $pluginName,
+        string $pluginVersion
+    ) {
+        $this->shop          = $shop;
+        $this->db            = $db;
+        $this->pluginName    = $pluginName;
+        $this->pluginVersion = $pluginVersion;
+    }
+
     /**
      * create Request Array from Shopware Variables
      *
@@ -25,7 +53,7 @@ class CreateRequestArray
                 if (!isset($position['amountWithTax']) || empty($position['amountWithTax'])) {
                     $position['amountWithTax'] = $position['amount'];
                 }
-                
+
                 $items[] = array(
                     'DESCR' => $position['articlename'],
                     'PRICE' => round((float) str_replace(',', '.', $position['amountWithTax']), 2),
@@ -46,7 +74,7 @@ class CreateRequestArray
             'setIDENTIFICATIONTRANSACTIONID' => '',
             'setIDENTIFICATIONSHOPPERID' => $user['additional']['user']['customernumber'],
             'setPRESENTATIONAMOUNT' => $basket['AmountNumeric'],
-            'setPRESENTATIONCURRENCY' => Shopware()->Shop()->getCurrency()->getCurrency(),
+            'setPRESENTATIONCURRENCY' => $this->shop->getCurrency()->getCurrency(),
             'setPRESENTATIONUSAGE' => 'Trx ',
             'setNAMESEX' => $user['billingaddress']['salutation'] == 'mr' ? 'M' : 'F',
             'setNAMEGIVEN' => $user['billingaddress']['firstname'],
@@ -60,7 +88,7 @@ class CreateRequestArray
             'setADDRESSCITY' => $user['billingaddress']['city'],
             'setADDRESSCOUNTRY' => $user['additional']['country']['countryiso'],
             'setCRITERIONPAYOLUTIONCUSTOMERGROUP' => $user['additional']['user']['customergroup'],
-            'setCRITERIONPAYOLUTIONCUSTOMERLANGUAGE' => substr(Shopware()->Shop()->getLocale()->getLocale(), 0, 2),
+            'setCRITERIONPAYOLUTIONCUSTOMERLANGUAGE' => substr($this->shop->getLocale()->getLocale(), 0, 2),
             'setCRITERIONPAYOLUTIONSHIPPINGCOMPANY' => $user['shippingaddress']['company'],
             'setCRITERIONPAYOLUTIONSHIPPINGGIVEN' => $user['shippingaddress']['firstname'],
             'setCRITERIONPAYOLUTIONSHIPPINGFAMILY' => $user['shippingaddress']['lastname'],
@@ -71,10 +99,10 @@ class CreateRequestArray
             'setCRITERIONPAYOLUTIONREQUESTSYSTEMVENDOR' => 'Shopware_PHP_POST',
             'setCRITERIONPAYOLUTIONREQUESTSYSTEMVERSION' => 'Shopware',
             'setCRITERIONPAYOLUTIONREQUESTSYSTEMTYPE' => 'Webshop',
-            'setCRITERIONPAYOLUTIONWEBSHOPURL' => Shopware()->Shop()->getHost(),
+            'setCRITERIONPAYOLUTIONWEBSHOPURL' => $this->shop->getHost(),
             //Todo: add parameter from dic PAYOL-258
-            'setCRITERIONPAYOLUTIONMODULENAME' => 'PolPaymentPayolution',
-            'setCRITERIONPAYOLUTIONMODULEVERSION' => '6.0.0',
+            'setCRITERIONPAYOLUTIONMODULENAME' => $this->pluginName,
+            'setCRITERIONPAYOLUTIONMODULEVERSION' => $this->pluginVersion,
             'setCRITERIONPAYOLUTIONTAXAMOUNT' => ($basket['AmountNumeric']-$basket['AmountNetNumeric']),
             'setCRITERIONPAYOLUTIONCOMPANYNAME' => $user['billingaddress']['company'],
             'setCRITERIONPAYOLUTIONCOMPANYUID' => $user['billingaddress']['ustid'],
@@ -87,7 +115,7 @@ class CreateRequestArray
         );
 
         if ($mode === 'PAYOLUTION_INS') {
-            $installmentData = Shopware()->Db()->fetchRow(
+            $installmentData = $this->db->fetchRow(
                 'SELECT
                   *
                 FROM
